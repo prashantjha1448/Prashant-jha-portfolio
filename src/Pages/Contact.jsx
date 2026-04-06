@@ -132,9 +132,9 @@ const Contact = () => {
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Connect With Me</p>
               <div className="flex gap-3">
                 {[
-                  { icon: "ri-github-line", href: "https://github.com/prashant", color: "#fff" },
-                  { icon: "ri-linkedin-line", href: "https://linkedin.com/in/prashant-jha", color: "#3b82f6" },
-                  { icon: "ri-twitter-x-line", href: "#", color: "#1da1f2" },
+                  { icon: "ri-github-line", href: "https://github.com/prashantjha1448", color: "#fff" },
+                  { icon: "ri-linkedin-line", href: "www.linkedin.com/in/prashantjha1448", color: "#3b82f6" },
+                  { icon: "ri-twitter-x-line", href: "https://x.com/Prashantjha1448", color: "#1da1f2" },
                 ].map((s, i) => (
                   <a
                     key={i}
