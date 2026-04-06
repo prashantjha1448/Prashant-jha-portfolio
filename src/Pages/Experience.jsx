@@ -30,7 +30,7 @@ const Experience = () => {
       side: "left",
       period: "2019 – 2020",
       title: "Secondary Education",
-      place: "Children's Happy Home School, Bhopal",
+      place: "Children's Happy Home , katihar (Bihar)",
       desc: "Completed schooling with general studies background. Started exploring computers and coding.",
       color: "#06b6d4",
       icon: "ri-school-line",
