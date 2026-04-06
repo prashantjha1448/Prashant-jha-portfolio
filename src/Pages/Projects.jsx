@@ -12,8 +12,8 @@ const Projects = () => {
       title: "Notewave",
       desc: "Production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, image/audio via Cloudinary.",
       tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary", "Passport.js"],
-      live: "https://notewave.app",
-      github: "https://github.com/prashant/notewave",
+      live: "https://notewave-frontend.vercel.app",
+      github: "https://github.com/prashantjha1448/notewave-frontend",
       accent: "#3b82f6",
     },
     {
