@@ -17,11 +17,11 @@ const Projects = () => {
       accent: "#3b82f6",
     },
     {
-      title: "Freelancing Marketplace",
-      desc: "Full-stack MERN freelancing platform with JWT auth, role-based dashboards for clients and freelancers, and bcrypt password encryption.",
+      title: "Lokpriyatam-chai",
+      desc: "A premium chai brand website showcasing Lokpriyatam’s identity, featuring modern UI with smooth animations, franchise opportunities, product range, and contact integration.",
       tech: ["React", "Express.js", "MongoDB", "JWT", "bcrypt"],
       live: "#",
-      github: "#",
+      github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
       accent: "#a855f7",
     },
     {
