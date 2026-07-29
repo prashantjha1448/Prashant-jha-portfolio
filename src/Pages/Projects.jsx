@@ -9,52 +9,29 @@ const Projects = () => {
 
   const projects = [
     {
+      title: "WorkQuora",
+      desc: "A hyperlocal marketplace connecting clients with verified nearby workers — electricians, plumbers, AC repair, mechanics, and more. Solves the fragmented, unverified hiring problem in India (WhatsApp groups, Facebook groups, no ratings or KYC) with location-based matching, verified profiles, and real-time job status updates.",
+      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Redis", "BullMQ", "Socket.io", "JWT", "OAuth 2.0"],
+      live: "https://www.workquora.com",
+      github: "#",
+      accent: "#3b82f6",
+      isLive: true,
+    },
+    {
       title: "Notewave",
-      desc: "Production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, image/audio via Cloudinary.",
+      desc: "Production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, restore, and permanent delete; image/audio attachments via Cloudinary.",
       tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary", "Passport.js"],
       live: "https://notewave-frontend.vercel.app",
       github: "https://github.com/prashantjha1448/notewave-frontend",
-      accent: "#3b82f6",
-    },
-    {
-      title: "Lokpriyatam-chai",
-      desc: "A premium chai brand website showcasing Lokpriyatam’s identity, featuring modern UI with smooth animations, franchise opportunities, product range, and contact integration.",
-      tech: ["React", "Express.js", "MongoDB", "JWT", "bcrypt"],
-      live: "#",
-      github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
       accent: "#a855f7",
     },
     {
-      title: "E-Commerce Platform",
-      desc: "Modern shopping platform with seamless checkout experience, product catalog, and secure payment integration.",
-      tech: ["Next.js", "Stripe", "Prisma", "Tailwind"],
+      title: "Lokpriyatam",
+      desc: "Responsive front-end for a tea stall business, showcasing the brand's identity with a modern UI, product range, franchise info, and contact integration.",
+      tech: ["React", "Tailwind CSS"],
       live: "#",
-      github: "#",
+      github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
       accent: "#06b6d4",
-    },
-    {
-      title: "AI Dashboard",
-      desc: "Analytics dashboard with real-time insights, charts, and data visualization for monitoring app performance.",
-      tech: ["React", "Chart.js", "Tailwind", "REST API"],
-      live: "#",
-      github: "#",
-      accent: "#10b981",
-    },
-    {
-      title: "Banking App",
-      desc: "Secure banking app with smooth transactions, account management, and real-time balance updates.",
-      tech: ["React Native", "Firebase", "JWT"],
-      live: "#",
-      github: "#",
-      accent: "#f59e0b",
-    },
-    {
-      title: "Portfolio Website",
-      desc: "Creative developer portfolio with GSAP animations, smooth scrolling, particle background, and premium UI effects.",
-      tech: ["React", "GSAP", "Tailwind", "Vite"],
-      live: "#",
-      github: "#",
-      accent: "#ec4899",
     },
   ];
 
@@ -140,7 +117,14 @@ const Projects = () => {
 
               {/* Content */}
               <div className="p-6 flex flex-col flex-1">
-                <h2 className="text-lg font-bold mb-2">{project.title}</h2>
+                <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
+                  {project.title}
+                  {project.isLive && (
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 animate-pulse">
+                      Live
+                    </span>
+                  )}
+                </h2>
                 <p className="text-gray-400 text-sm mb-4 leading-relaxed flex-1">{project.desc}</p>
 
                 {/* Tech tags */}

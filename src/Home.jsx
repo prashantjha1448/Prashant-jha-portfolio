@@ -2,7 +2,6 @@ import React from 'react'
 import Navbar from './Components/Navbar'
 import Hero from './Pages/Hero'
 import About from './Pages/About'
-import Skills from './Pages/Skills'
 import Projects from './Pages/Projects'
 import TechStack from './Pages/TechStack'
 import Experience from './Pages/Experience'
@@ -14,7 +13,6 @@ const Home = () => {
         <Navbar/>
         <Hero/>
         <About/>
-        <Skills/>
         <Projects/>
         <TechStack/>
         <Experience/>

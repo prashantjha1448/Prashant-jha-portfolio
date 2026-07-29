@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import emailjs from "@emailjs/browser";
 
 gsap.registerPlugin(ScrollTrigger);
-
-// ─── BACKEND CONFIG ───────────────────────────────────────────────────────────
-// Change this URL to your backend API endpoint
-const API_URL = "http://localhost:5000/api/contact";
-// ─────────────────────────────────────────────────────────────────────────────
 
 const Contact = () => {
   const sectionRef = useRef(null);
@@ -35,22 +31,31 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("loading");
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.error("EmailJS environment variables are missing.");
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+      return;
+    }
+
     try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setStatus("success");
-        setForm({ name: "", email: "", message: "" });
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      // If no backend yet, just simulate success for UI testing
+      const templateParams = {
+        name: form.name,
+        email: form.email,
+        message: form.message,
+      };
+
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
       setStatus("success");
       setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS submission failed:", error);
+      setStatus("error");
     }
     setTimeout(() => setStatus("idle"), 4000);
   };
@@ -252,10 +257,16 @@ const Contact = () => {
                 {status === "idle" && "Send Message →"}
               </button>
 
-              <p className="text-xs text-gray-600 text-center">
-                {/* Backend connect: Change API_URL at top of file to your Express route */}
-                Form submits to <code className="text-gray-500">POST /api/contact</code>
-              </p>
+              {status === "success" && (
+                <p className="text-sm text-emerald-400 text-center font-medium mt-2">
+                  ✓ Your message has been sent successfully. I'll get back to you soon!
+                </p>
+              )}
+              {status === "error" && (
+                <p className="text-sm text-rose-400 text-center font-medium mt-2">
+                  ✗ Failed to send message. Please try again or email me directly.
+                </p>
+              )}
             </form>
           </div>
 
@@ -275,7 +286,7 @@ const Contact = () => {
             <p className="text-xs mt-0.5">Full Stack Developer · MERN</p>
           </div>
           <div className="flex gap-6">
-            {["About", "Skills", "Projects", "Experience", "Contact"].map((l) => (
+            {["About", "Projects", "Experience", "Contact"].map((l) => (
               <button
                 key={l}
                 onClick={() => {

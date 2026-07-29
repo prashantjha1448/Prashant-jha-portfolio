@@ -14,7 +14,6 @@ const Navbar = () => {
         {/* Links */}
         <div className="hidden md:flex items-center gap-8 text-gray-300">
           <a href="#" className="hover:text-white transition">About</a>
-          <a href="#" className="hover:text-white transition">Skills</a>
           <a href="#" className="hover:text-white transition">Projects</a>
           <a href="#" className="hover:text-white transition">Experience</a>
           <a href="#" className="hover:text-white transition">Contact</a>
