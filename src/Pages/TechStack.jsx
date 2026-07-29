@@ -5,13 +5,13 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 // ✅ Small reusable card
-const TechCard = ({ tech }) => (
+const TechCard = ({ tech, index }) => (
   <div
-    className="tech-card rounded-xl px-4 py-3.5"
+    className="tech-card rounded-xl px-4 py-3.5 text-center flex flex-col justify-center items-center"
     style={{
       border: "1px solid rgba(255,255,255,0.09)",
       background: "rgba(255,255,255,0.04)",
-      minWidth: "118px",
+      animationDelay: `${index * 0.12}s`,
     }}
   >
     <div className="card-inner">
@@ -205,37 +205,11 @@ const TechStack = () => {
           </p>
         </div>
 
-        {/* ✅ FIXED PYRAMID LAYOUT */}
-        <div className="tech-grid flex flex-col gap-3">
-
-          {/* Row 1 - 10 */}
-          <div className="flex justify-center gap-2.5 flex-wrap">
-            {techs.slice(0, 10).map((tech, i) => (
-              <TechCard key={i} tech={tech} />
-            ))}
-          </div>
-
-          {/* Row 2 - 8 */}
-          <div className="flex justify-center gap-2.5 flex-wrap">
-            {techs.slice(10, 18).map((tech, i) => (
-              <TechCard key={i} tech={tech} />
-            ))}
-          </div>
-
-          {/* Row 3 - 4 */}
-          <div className="flex justify-center gap-2.5 flex-wrap">
-            {techs.slice(18, 22).map((tech, i) => (
-              <TechCard key={i} tech={tech} />
-            ))}
-          </div>
-
-          {/* Row 4 - 3 */}
-          <div className="flex justify-center gap-2.5 flex-wrap">
-            {techs.slice(22, 25).map((tech, i) => (
-              <TechCard key={i} tech={tech} />
-            ))}
-          </div>
-
+        {/* ✅ RESPONSIVE TECH GRID */}
+        <div className="tech-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          {techs.map((tech, i) => (
+            <TechCard key={i} tech={tech} index={i} />
+          ))}
         </div>
 
         {/* Stats */}
