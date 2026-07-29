@@ -20,9 +20,9 @@ const Contact = () => {
     e.preventDefault();
     setStatus("loading");
 
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_wdfgw6q";
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_maw5jyb";
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YsVQ1F-oGnilD_JXm";
 
     if (!serviceId || !templateId || !publicKey) {
       console.error("EmailJS environment variables are missing.");
