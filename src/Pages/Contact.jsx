@@ -1,28 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
-
-gsap.registerPlugin(ScrollTrigger);
+import portrait from "../assets/portrait.png";
 
 const Contact = () => {
-  const sectionRef = useRef(null);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(sectionRef.current.querySelectorAll(".contact-item"), {
-        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        y: 40,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power3.out",
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,244 +35,362 @@ const Contact = () => {
       const templateParams = {
         name: form.name,
         email: form.email,
+        subject: form.subject,
         message: form.message,
       };
 
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
       setStatus("success");
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("EmailJS submission failed:", error);
       setStatus("error");
     }
-    setTimeout(() => setStatus("idle"), 4000);
+    setTimeout(() => setStatus("idle"), 5000);
   };
 
-  const inputClass =
-    "w-full mt-2 px-4 py-3 rounded-xl text-sm text-white outline-none transition-all duration-300 focus:ring-1";
-  const inputStyle = {
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+  const contactItems = [
+    { icon: "ri-map-pin-line", label: "Location", value: "Bhopal, India", color: "#3b82f6" },
+    { icon: "ri-mail-line", label: "Email", value: "prashantjha0108@gmail.com", color: "#a855f7" },
+    { icon: "ri-phone-line", label: "Phone", value: "+91 9981789795", color: "#06b6d4" },
+  ];
+
+  const socialLinks = [
+    { icon: "ri-github-line", href: "https://github.com/prashantjha1448", label: "GitHub", color: "#fff" },
+    { icon: "ri-linkedin-line", href: "https://linkedin.com/in/prashantjha1448", label: "LinkedIn", color: "#3b82f6" },
+    { icon: "ri-twitter-x-line", href: "https://x.com/Prashantjha1448", label: "X (Twitter)", color: "#1da1f2" },
+    { icon: "ri-file-download-line", href: "#", label: "Download Resume", color: "#10b981", download: "Prashant_Jha_Resume.pdf" },
+  ];
+
+  // Motion animation variants for viewport entering
+  const fadeUpVariant = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: "easeOut" } 
+    }
   };
 
   return (
     <section
       id="contact"
-      ref={sectionRef}
-      className="w-full min-h-screen bg-[#0b0f1a] text-white px-6 py-24"
+      className="w-full min-h-screen text-white px-6 py-24 relative overflow-hidden bg-gradient-to-b from-[#09090F] via-[#10131D] to-[#09090F] flex items-center justify-center"
     >
-      <div className="max-w-7xl mx-auto">
+      
+      {/* ─── BACKGROUND DECORATION ─────────────────────────────────────────────────── */}
+      {/* Soft Purple Glow Blob */}
+      <div 
+        className="absolute top-1/4 left-1/10 w-[350px] md:w-[500px] h-[350px] md:h-[500px] rounded-full blur-[120px] pointer-events-none opacity-20 z-0"
+        style={{
+          background: "radial-gradient(circle, rgba(168,85,247,0.35) 0%, transparent 70%)"
+        }}
+      />
+      {/* Soft Blue Glow Blob */}
+      <div 
+        className="absolute bottom-1/4 right-1/10 w-[350px] md:w-[500px] h-[350px] md:h-[500px] rounded-full blur-[120px] pointer-events-none opacity-20 z-0"
+        style={{
+          background: "radial-gradient(circle, rgba(59,130,246,0.35) 0%, transparent 70%)"
+        }}
+      />
 
-        {/* Heading */}
-        <div className="text-center mb-20 contact-item">
-          <h4 className="text-purple-400 tracking-widest text-xs mb-4 uppercase">
+      {/* Subtle Noise Texture Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(#ffffff03_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none z-0" />
+
+      {/* ─── CONTAINER ────────────────────────────────────────────────────────────── */}
+      <div className="max-w-6xl mx-auto w-full relative z-10">
+
+        {/* Heading Block */}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeUpVariant}
+          className="text-center mb-16"
+        >
+          <h4 className="text-purple-400 tracking-widest text-xs mb-3 uppercase font-mono font-semibold">
             Get In Touch
           </h4>
           <h1
-            className="text-4xl md:text-6xl font-black"
+            className="text-4xl md:text-5xl font-black text-white max-w-2xl mx-auto leading-tight"
             style={{ fontFamily: "'Georgia', serif" }}
           >
-            Let's Work Together
+            Let's Build Something Amazing Together
           </h1>
-          <p className="text-gray-400 mt-4 text-sm">
-            Have a project in mind? Let's create something amazing together
+          <p className="text-gray-400 mt-4 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            Have an idea, startup, freelance project, or full-time opportunity? Let's create something impactful together.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Content */}
-        <div className="grid md:grid-cols-2 gap-10">
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
 
-          {/* LEFT */}
-          <div className="flex flex-col gap-5">
-            {[
-              { icon: "ri-mail-line", label: "Email", value: "prashantjha0108@gmail.com", color: "#3b82f6" },
-              { icon: "ri-phone-line", label: "Phone", value: "+91 9981789795", color: "#a855f7" },
-              { icon: "ri-map-pin-line", label: "Location", value: "Bhopal, Madhya Pradesh, India", color: "#06b6d4" },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="contact-item flex items-center gap-4 p-5 rounded-xl transition-all duration-300 cursor-default"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.border = `1px solid ${item.color}50`;
-                  e.currentTarget.style.boxShadow = `0 0 25px ${item.color}20`;
-                  e.currentTarget.style.background = `${item.color}08`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.07)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                }}
-              >
-                <div
-                  className="w-11 h-11 flex items-center justify-center rounded-lg shrink-0"
-                  style={{ background: `linear-gradient(135deg, ${item.color}, ${item.color}88)` }}
-                >
-                  <i className={`${item.icon} text-lg`} />
+          {/* LEFT COLUMN: Premium Profile Card (40% width on Desktop) */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariant}
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="md:col-span-5 backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-3xl shadow-2xl p-6 md:p-8 flex flex-col justify-between gap-6 cursor-default relative overflow-hidden"
+          >
+            
+            {/* Subtle glow behind card content */}
+            <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col gap-5">
+              
+              {/* Header Info: Portrait Image + Name & Role */}
+              <div className="flex items-center gap-4">
+                
+                {/* Passport size Portrait container */}
+                <div className="relative shrink-0">
+                  {/* Small glow behind photo */}
+                  <div className="absolute inset-0 bg-purple-500/20 blur-md rounded-[18px]" />
+                  <img
+                    src={portrait}
+                    alt="Prashant Jha Portrait"
+                    loading="lazy"
+                    className="w-[100px] md:w-[120px] h-[125px] md:h-[150px] object-cover rounded-[18px] border border-white/15 relative z-10 shadow-md select-none"
+                  />
                 </div>
-                <div>
-                  <p className="text-gray-400 text-xs">{item.label}</p>
-                  <p className="text-sm font-medium">{item.value}</p>
+
+                {/* Name, Role & Status */}
+                <div className="flex flex-col gap-1.5">
+                  <h2 className="text-lg md:text-xl font-bold text-white tracking-wide">Prashant Jha</h2>
+                  <p className="text-xs text-purple-400 font-mono">Full Stack MERN Developer</p>
+                  
+                  {/* Availability Badge */}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[10px] font-semibold text-emerald-400 font-mono uppercase tracking-wider">
+                      Available for Freelance
+                    </span>
+                  </div>
                 </div>
+
               </div>
-            ))}
 
-            {/* Social */}
-            <div className="contact-item">
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-4">Connect With Me</p>
-              <div className="flex gap-3">
-                {[
-                  { icon: "ri-github-line", href: "https://github.com/prashantjha1448", color: "#fff" },
-                  { icon: "ri-linkedin-line", href: "www.linkedin.com/in/prashantjha1448", color: "#3b82f6" },
-                  { icon: "ri-twitter-x-line", href: "https://x.com/Prashantjha1448", color: "#1da1f2" },
-                ].map((s, i) => (
-                  <a
-                    key={i}
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-300"
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      background: "rgba(255,255,255,0.03)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.border = `1px solid ${s.color}60`;
-                      e.currentTarget.style.background = `${s.color}15`;
-                      e.currentTarget.style.boxShadow = `0 0 20px ${s.color}25`;
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.border = "1px solid rgba(255,255,255,0.1)";
-                      e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                      e.currentTarget.style.boxShadow = "none";
-                      e.currentTarget.style.transform = "translateY(0)";
-                    }}
+              {/* Bio description */}
+              <p className="text-gray-300 text-xs md:text-sm leading-relaxed border-t border-white/5 pt-4">
+                I build scalable, secure, and production-ready web applications using the MERN stack, AI-powered tools, and modern cloud technologies. 
+                <span className="block mt-2 text-gray-400">
+                  I enjoy transforming ideas into fast, beautiful, and impactful digital products.
+                </span>
+              </p>
+
+              {/* Contact Info Items */}
+              <div className="flex flex-col gap-2.5 mt-2">
+                {contactItems.map((item, i) => (
+                  <div 
+                    key={i} 
+                    className="flex items-center gap-3.5 p-3 rounded-xl border border-white/5 bg-white/[0.01] transition-all hover:bg-white/[0.03] hover:border-white/10"
                   >
-                    <i className={`${s.icon} text-base`} />
-                  </a>
+                    <div 
+                      className="w-9 h-9 flex items-center justify-center rounded-lg text-white/95"
+                      style={{ background: `linear-gradient(135deg, ${item.color}25, ${item.color}05)` }}
+                    >
+                      <i className={`${item.icon} text-base`} />
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase font-mono tracking-widest text-gray-500">{item.label}</p>
+                      <p className="text-xs font-semibold text-white/95">{item.value}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
+
             </div>
 
-            {/* Quote */}
-            <div
-              className="contact-item p-6 rounded-2xl"
-              style={{
-                border: "1px solid rgba(168,85,247,0.2)",
-                background: "linear-gradient(135deg, rgba(168,85,247,0.08), transparent)",
-              }}
-            >
-              <p className="text-gray-300 italic text-sm leading-relaxed">
-                "I'm always excited to collaborate on innovative projects and bring creative ideas to life."
-              </p>
-              <p className="text-gray-500 mt-3 text-xs">— Prashant Jha</p>
-            </div>
-          </div>
+            {/* Bottom Section: Socials + Quote Card */}
+            <div className="flex flex-col gap-4">
 
-          {/* RIGHT — Form */}
-          <div
-            className="contact-item p-8 rounded-2xl"
-            style={{
-              border: "1px solid rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.03)",
-            }}
+              {/* Social Links Row */}
+              <div className="flex items-center justify-between px-1">
+                {socialLinks.map((s, i) => (
+                  <div key={i} className="relative group">
+                    
+                    {/* Tooltip */}
+                    <span className="absolute -top-9 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[10px] font-mono tracking-wide text-white bg-black/90 border border-white/10 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      {s.label}
+                    </span>
+
+                    <motion.a
+                      href={s.href}
+                      download={s.download}
+                      target={s.href !== "#" ? "_blank" : undefined}
+                      rel="noreferrer"
+                      whileHover={{ scale: 1.12, rotate: 5, boxShadow: `0 0 15px ${s.color}30` }}
+                      transition={{ type: "spring", stiffness: 350, damping: 15 }}
+                      className="w-10 h-10 flex items-center justify-center rounded-full border border-white/10 bg-white/[0.02] text-gray-400 hover:text-white hover:border-white/20 transition-colors"
+                    >
+                      <i className={`${s.icon} text-base`} />
+                    </motion.a>
+                  </div>
+                ))}
+              </div>
+
+              {/* Quote Card */}
+              <div className="p-4 rounded-2xl border border-purple-500/20 bg-purple-500/5 backdrop-blur-md">
+                <p className="text-gray-300 italic text-xs leading-relaxed">
+                  "Great products are built through great collaboration."
+                </p>
+                <p className="text-gray-500 mt-2 text-[10px] font-mono uppercase tracking-widest">— Prashant Jha</p>
+              </div>
+
+            </div>
+
+          </motion.div>
+
+          {/* RIGHT COLUMN: Contact Form Card (60% width on Desktop) */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={fadeUpVariant}
+            whileHover={{ y: -8, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="md:col-span-7 backdrop-blur-xl bg-white/[0.03] border border-white/10 rounded-3xl shadow-2xl p-6 md:p-8 flex flex-col justify-center relative overflow-hidden"
           >
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            
+            {/* Subtle glow behind form container */}
+            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5 relative z-10">
+              
+              {/* Grid for Name & Email */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="name" className="text-[10px] uppercase font-mono tracking-widest text-gray-400">Full Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name"
+                    required
+                    className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm text-white outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-all placeholder:text-gray-600"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="text-[10px] uppercase font-mono tracking-widest text-gray-400">Email Address</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="name@company.com"
+                    required
+                    className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm text-white outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-all placeholder:text-gray-600"
+                  />
+                </div>
+              </div>
+
+              {/* Subject Input Field */}
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wide">Your Name</label>
+                <label htmlFor="subject" className="text-[10px] uppercase font-mono tracking-widest text-gray-400">Subject</label>
                 <input
                   type="text"
-                  name="name"
-                  value={form.name}
+                  id="subject"
+                  name="subject"
+                  value={form.subject}
                   onChange={handleChange}
-                  placeholder="John Doe"
+                  placeholder="How can I help you?"
                   required
-                  className={inputClass}
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(168,85,247,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm text-white outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-all placeholder:text-gray-600"
                 />
               </div>
+
+              {/* Message Input Field */}
               <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wide">Your Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="john@example.com"
-                  required
-                  className={inputClass}
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(168,85,247,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
-                />
-              </div>
-              <div>
-                <label className="text-xs text-gray-400 uppercase tracking-wide">Your Message</label>
+                <label htmlFor="message" className="text-[10px] uppercase font-mono tracking-widest text-gray-400">Message</label>
                 <textarea
+                  id="message"
                   name="message"
                   value={form.message}
                   onChange={handleChange}
-                  rows="5"
-                  placeholder="Tell me about your project..."
+                  rows="4"
+                  placeholder="Tell me about your project or opportunity..."
                   required
-                  className={inputClass}
-                  style={{ ...inputStyle, resize: "none" }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(168,85,247,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  className="w-full mt-2 px-4 py-3 rounded-xl bg-black/30 border border-white/10 text-sm text-white outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/40 transition-all resize-none placeholder:text-gray-600"
                 />
               </div>
 
+              {/* CTA Button */}
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full py-3 rounded-full font-medium text-sm transition-all duration-300 relative overflow-hidden"
+                className="w-full py-3.5 rounded-full font-medium text-sm transition-all duration-500 relative overflow-hidden group cursor-pointer"
                 style={{
                   background: status === "success"
                     ? "linear-gradient(to right, #10b981, #059669)"
-                    : "linear-gradient(to right, #3b82f6, #a855f7)",
-                  opacity: status === "loading" ? 0.7 : 1,
+                    : "linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)",
+                  boxShadow: status === "success"
+                    ? "0 0 20px rgba(16,185,129,0.3)"
+                    : "0 0 20px rgba(139,92,246,0.3)",
                 }}
               >
-                {status === "loading" && "Sending..."}
-                {status === "success" && "✓ Message Sent!"}
-                {status === "error" && "Failed — Try Again"}
-                {status === "idle" && "Send Message →"}
+                <span className="relative z-10 flex items-center justify-center gap-1.5">
+                  {status === "loading" && "Sending..."}
+                  {status === "success" && "✓ Message Sent Successfully"}
+                  {status === "error" && "Failed — Try Again"}
+                  {status === "idle" && (
+                    <>
+                      Start a Project
+                      <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                    </>
+                  )}
+                </span>
+
+                {/* Shimmer gradient overlay */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{
+                    background: "linear-gradient(135deg, #2563eb, #7c3aed, #db2777)"
+                  }}
+                />
               </button>
 
-              {status === "success" && (
-                <p className="text-sm text-emerald-400 text-center font-medium mt-2">
-                  ✓ Your message has been sent successfully. I'll get back to you soon!
-                </p>
-              )}
-              {status === "error" && (
-                <p className="text-sm text-rose-400 text-center font-medium mt-2">
-                  ✗ Failed to send message. Please try again or email me directly.
-                </p>
-              )}
+              {/* Inline dynamic feedback messages */}
+              <AnimatePresence>
+                {status === "success" && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="text-xs text-emerald-400 text-center font-medium font-mono mt-1"
+                  >
+                    ✓ I have received your message! I'll get back to you within 24 hours.
+                  </motion.p>
+                )}
+                {status === "error" && (
+                  <motion.p 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="text-xs text-rose-400 text-center font-medium font-mono mt-1"
+                  >
+                    ✗ Error submitting form. Please try again or mail me directly.
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
             </form>
-          </div>
+          </motion.div>
 
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-24 border-t border-white/10 pt-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-gray-500 text-sm">
-          <div>
-            <h2
-              className="text-base text-white font-bold"
-              style={{ fontFamily: "'Georgia', serif" }}
-            >
-              Prashant Jha
-            </h2>
-            <p className="text-xs mt-0.5">Full Stack Developer · MERN</p>
-          </div>
+      <div className="absolute bottom-0 left-0 right-0 py-6 border-t border-white/5 bg-black/10 backdrop-blur-md hidden md:block">
+        <div className="max-w-6xl mx-auto flex justify-between items-center px-6 text-gray-500 text-[11px] font-mono uppercase tracking-wider">
+          <p>© 2026 Prashant Jha</p>
           <div className="flex gap-6">
             {["About", "Projects", "Experience", "Contact"].map((l) => (
               <button
@@ -293,15 +399,15 @@ const Contact = () => {
                   const el = document.getElementById(l.toLowerCase());
                   if (el) el.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="hover:text-white transition text-xs uppercase tracking-wide"
+                className="hover:text-white transition cursor-pointer"
               >
                 {l}
               </button>
             ))}
           </div>
-          <p className="text-xs">© 2026 Built with ❤️ by Prashant</p>
         </div>
       </div>
+
     </section>
   );
 };
