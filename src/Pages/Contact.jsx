@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
-import portrait from "../assets/portrait.png";
+import portrait from "../assets/portrait.jpg";
 
 const Contact = () => {
   const [form, setForm] = useState({
