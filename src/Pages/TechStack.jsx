@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,7 +12,7 @@ const TechCard = ({ tech, index }) => (
     style={{
       border: "1px solid rgba(255,255,255,0.09)",
       background: "rgba(255,255,255,0.04)",
-      animationDelay: `${index * 0.05}s`,
+      animationDelay: `${(index % 10) * 0.05}s`,
     }}
   >
     <div className="flex items-center justify-center text-2xl h-8">
@@ -35,59 +36,65 @@ const TechCard = ({ tech, index }) => (
 
 const TechStack = () => {
   const sectionRef = useRef(null);
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const categories = [
+    { id: "all", label: "All" },
+    { id: "frontend", label: "Frontend" },
+    { id: "backend", label: "Backend" },
+    { id: "database", label: "Database" },
+    { id: "tools", label: "Tools & DevOps" },
+  ];
 
   const techs = [
     // Languages
-    { name: "JavaScript", type: "Language", icon: "devicon-javascript-plain colored" },
-    { name: "Python", type: "Language", icon: "devicon-python-plain colored" },
-    { name: "HTML5", type: "Markup", icon: "devicon-html5-plain colored" },
-    { name: "CSS3", type: "Styling", icon: "devicon-css3-plain colored" },
+    { name: "JavaScript", type: "Language", icon: "devicon-javascript-plain colored", category: "frontend" },
+    { name: "HTML5", type: "Markup", icon: "devicon-html5-plain colored", category: "frontend" },
+    { name: "CSS3", type: "Styling", icon: "devicon-css3-plain colored", category: "frontend" },
 
     // Frontend
-    { name: "React.js", type: "Frontend", icon: "devicon-react-original colored" },
-    { name: "Redux Toolkit", type: "Frontend", icon: "devicon-redux-original colored" },
-    { name: "Tailwind CSS", type: "Styling", icon: "devicon-tailwindcss-original colored" },
-    { name: "Framer Motion", type: "Frontend", icon: "ri-play-circle-line text-purple-400" },
-    { name: "Context API", type: "State Mgmt", icon: "ri-bubble-chart-line text-blue-400" },
-    { name: "React Router", type: "Routing", icon: "ri-route-line text-red-400" },
-    { name: "Vite", type: "Build Tool", icon: "devicon-vite-plain colored" },
+    { name: "React.js", type: "Frontend", icon: "devicon-react-original colored", category: "frontend" },
+    { name: "Redux Toolkit", type: "Frontend", icon: "devicon-redux-original colored", category: "frontend" },
+    { name: "Tailwind CSS", type: "Styling", icon: "devicon-tailwindcss-original colored", category: "frontend" },
+    { name: "Framer Motion", type: "Frontend", icon: "ri-play-circle-line text-purple-400", category: "frontend" },
+    { name: "Context API", type: "State Mgmt", icon: "ri-bubble-chart-line text-blue-400", category: "frontend" },
+    { name: "React Router", type: "Routing", icon: "ri-route-line text-red-400", category: "frontend" },
 
     // Backend & APIs
-    { name: "Node.js", type: "Backend", icon: "devicon-nodejs-plain colored" },
-    { name: "Express.js", type: "Backend", icon: "devicon-express-original text-gray-400" },
-    { name: "REST API", type: "API", icon: "ri-api-line text-emerald-400" },
-    { name: "Socket.io", type: "Real-time", icon: "devicon-socketio-original text-white" },
-    { name: "Redis", type: "Backend", icon: "devicon-redis-plain colored" },
-    { name: "BullMQ", type: "Queue", icon: "ri-list-settings-line text-orange-500" },
-    { name: "Nodemailer", type: "Email", icon: "ri-mail-send-line text-blue-500" },
+    { name: "Node.js", type: "Backend", icon: "devicon-nodejs-plain colored", category: "backend" },
+    { name: "Express.js", type: "Backend", icon: "devicon-express-original text-gray-400", category: "backend" },
+    { name: "REST API", type: "API", icon: "ri-api-line text-emerald-400", category: "backend" },
+    { name: "Socket.io", type: "Real-time", icon: "devicon-socketio-original text-white", category: "backend" },
+    { name: "Redis", type: "Backend", icon: "devicon-redis-plain colored", category: "backend" },
+    { name: "BullMQ", type: "Queue", icon: "ri-list-settings-line text-orange-500", category: "backend" },
+    { name: "Nodemailer", type: "Email", icon: "ri-mail-send-line text-blue-500", category: "backend" },
 
     // Databases & ORMs
-    { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored" },
-    { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain" },
-    { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500" },
-    { name: "MySQL", type: "Database", icon: "devicon-mysql-plain colored" },
-    { name: "Prisma", type: "Database/ORM", icon: "devicon-prisma-original text-white" },
+    { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored", category: "database" },
+    { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain", category: "database" },
+    { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500", category: "database" },
 
     // Security & Auth
-    { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400" },
-    { name: "bcrypt", type: "Security", icon: "ri-lock-password-line text-yellow-500" },
-    { name: "OAuth 2.0", type: "Auth", icon: "devicon-oauth-plain colored" },
-    { name: "Passport.js", type: "Auth", icon: "ri-passport-line text-sky-400" },
+    { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400", category: "backend" },
+    { name: "bcrypt", type: "Security", icon: "ri-lock-password-line text-yellow-500", category: "backend" },
+    { name: "OAuth 2.0", type: "Auth", icon: "devicon-oauth-plain colored", category: "backend" },
+    { name: "Passport.js", type: "Auth", icon: "ri-passport-line text-sky-400", category: "backend" },
 
     // Media & Storage
-    { name: "Cloudinary", type: "Media", icon: "ri-image-line text-cyan-400" },
+    { name: "Cloudinary", type: "Media", icon: "ri-image-line text-cyan-400", category: "tools" },
 
     // Developer Tools & Version Control
-    { name: "Git", type: "Version Control", icon: "devicon-git-plain colored" },
-    { name: "GitHub", type: "Repo", icon: "devicon-github-original text-white" },
-    { name: "Postman", type: "API Tool", icon: "devicon-postman-plain colored" },
-    { name: "VS Code", type: "Editor", icon: "devicon-vscode-plain colored" },
-    { name: "npm", type: "Package Mgmt", icon: "devicon-npm-original-wordmark colored" },
+    { name: "Git", type: "Version Control", icon: "devicon-git-plain colored", category: "tools" },
+    { name: "GitHub", type: "Repo", icon: "devicon-github-original text-white", category: "tools" },
+    { name: "Postman", type: "API Tool", icon: "devicon-postman-plain colored", category: "tools" },
+    { name: "VS Code", type: "Editor", icon: "devicon-vscode-plain colored", category: "tools" },
+    { name: "npm", type: "Package Mgmt", icon: "devicon-npm-original-wordmark colored", category: "tools" },
+    { name: "Vite", type: "Build Tool", icon: "devicon-vite-plain colored", category: "tools" },
 
     // Deployment
-    { name: "Vercel", type: "Deployment", icon: "devicon-vercel-original text-white" },
-    { name: "Render", type: "Deployment", icon: "ri-server-line text-indigo-400" },
-    { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored" },
+    { name: "Vercel", type: "Deployment", icon: "devicon-vercel-original text-white", category: "tools" },
+    { name: "Render", type: "Deployment", icon: "ri-server-line text-indigo-400", category: "tools" },
+    { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored", category: "tools" },
   ];
 
   const stats = [
@@ -99,15 +106,6 @@ const TechStack = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".tech-card", {
-        scrollTrigger: { trigger: ".tech-grid", start: "top 85%" },
-        y: 30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.035,
-        ease: "power3.out",
-      });
-
       gsap.from(".stat-card", {
         scrollTrigger: { trigger: ".stats-grid", start: "top 90%" },
         y: 30,
@@ -121,15 +119,18 @@ const TechStack = () => {
     return () => ctx.revert();
   }, []);
 
+  const filteredTechs = activeCategory === "all"
+    ? techs
+    : techs.filter((tech) => tech.category === activeCategory);
+
   return (
     <section
       id="techstack"
       ref={sectionRef}
-      className="w-full text-white px-6 py-24"
+      className="w-full text-white px-6 py-24 relative overflow-hidden"
       style={{ background: "#0b0f1a" }}
     >
       <style>{`
-
         /* ✅ SAME SMOOTH FLOAT */
         @keyframes floatSmooth {
           0%, 100% { transform: translateY(0px); }
@@ -220,17 +221,19 @@ const TechStack = () => {
             0 6px 20px rgba(0,0,0,0.3);
           transform: translateY(-2px);
         }
-
       `}</style>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative z-10">
 
         {/* Heading */}
-        <div className="text-center mb-14">
-          <h4 className="text-purple-400 tracking-widest text-xs mb-3 uppercase">
+        <div className="text-center mb-10">
+          <h4 className="text-purple-400 tracking-widest text-xs mb-3 uppercase font-mono font-semibold">
             Technologies
           </h4>
-          <h1 className="text-5xl md:text-7xl font-black">
+          <h1 
+            className="text-4xl md:text-5xl font-black text-white"
+            style={{ fontFamily: "'Georgia', serif" }}
+          >
             Tech Stack
           </h1>
           <p className="text-gray-400 mt-3 text-sm">
@@ -238,15 +241,51 @@ const TechStack = () => {
           </p>
         </div>
 
-        {/* ✅ RESPONSIVE TECH GRID */}
-        <div className="tech-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-          {techs.map((tech, i) => (
-            <TechCard key={i} tech={tech} index={i} />
+        {/* Category Pills Tab bar */}
+        <div className="flex justify-center flex-wrap gap-2 md:gap-3 mb-12 relative z-20">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`relative px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-mono font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+                activeCategory === cat.id ? "text-white" : "text-gray-400 hover:text-white"
+              }`}
+            >
+              {activeCategory === cat.id && (
+                <motion.div
+                  layoutId="activeTabGlow"
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/35"
+                  transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                />
+              )}
+              <span className="relative z-10">{cat.label}</span>
+            </button>
           ))}
         </div>
 
+        {/* Responsive Grid with Framer Motion Layout animations */}
+        <motion.div 
+          layout
+          className="tech-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 min-h-[380px]"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredTechs.map((tech, i) => (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                key={tech.name}
+              >
+                <TechCard tech={tech} index={i} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
         {/* Stats */}
-        <div className="stats-grid mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="stats-grid mt-16 grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((stat, i) => (
             <div
               key={i}
