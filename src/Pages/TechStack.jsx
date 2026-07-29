@@ -97,27 +97,9 @@ const TechStack = () => {
     { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored", category: "tools" },
   ];
 
-  const stats = [
-    { num: "1+", label: "Years Experience" },
-    { num: "8+", label: "Projects Built" },
-    { num: "25+", label: "Features Built" },
-    { num: "500+", label: "Code Commits" },
-  ];
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".stat-card", {
-        scrollTrigger: { trigger: ".stats-grid", start: "top 90%" },
-        y: 30,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: "power3.out",
-      });
-    }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
+
 
   const filteredTechs = activeCategory === "all"
     ? techs
@@ -284,26 +266,7 @@ const TechStack = () => {
           </AnimatePresence>
         </motion.div>
 
-        {/* Stats */}
-        <div className="stats-grid mt-16 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {stats.map((stat, i) => (
-            <div
-              key={i}
-              className={`stat-card rounded-xl py-7 px-4 text-center ${
-                stat.label.includes("Projects") ? "scale-105 border-purple-500" : ""
-              }`}
-              style={{
-                border: "1px solid rgba(255,255,255,0.08)",
-                background: "rgba(255,255,255,0.03)",
-              }}
-            >
-              <h2 className="text-3xl font-black">{stat.num}</h2>
-              <p className="text-gray-400 mt-1 text-[11px] uppercase">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
+
 
       </div>
     </section>
