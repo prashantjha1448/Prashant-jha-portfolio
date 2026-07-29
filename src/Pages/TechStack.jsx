@@ -7,13 +7,21 @@ gsap.registerPlugin(ScrollTrigger);
 // ✅ Small reusable card
 const TechCard = ({ tech, index }) => (
   <div
-    className="tech-card rounded-xl px-4 py-3.5 text-center flex flex-col justify-center items-center"
+    className="tech-card rounded-xl px-4 py-3.5 text-center flex flex-col justify-center items-center gap-2.5"
     style={{
       border: "1px solid rgba(255,255,255,0.09)",
       background: "rgba(255,255,255,0.04)",
-      animationDelay: `${index * 0.12}s`,
+      animationDelay: `${index * 0.05}s`,
     }}
   >
+    <div className="flex items-center justify-center text-2xl h-8">
+      {tech.icon ? (
+        <i className={`${tech.icon}`}></i>
+      ) : (
+        <i className="ri-code-s-slash-line text-purple-400"></i>
+      )}
+    </div>
+
     <div className="card-inner">
       <h3 className="text-xs font-semibold text-white">
         {tech.name}
@@ -29,32 +37,57 @@ const TechStack = () => {
   const sectionRef = useRef(null);
 
   const techs = [
-    { name: "JavaScript", type: "Language" },
-    { name: "HTML5", type: "Markup" },
-    { name: "CSS3", type: "Styling" },
-    { name: "React.js", type: "Frontend" },
-    { name: "Tailwind CSS", type: "Styling" },
-    { name: "Vite", type: "Build Tool" },
-    { name: "Context API", type: "State Mgmt" },
-    { name: "React Router", type: "Routing" },
-    { name: "Node.js", type: "Backend" },
-    { name: "Express.js", type: "Backend" },
-    { name: "REST API", type: "API" },
-    { name: "JWT", type: "Auth" },
-    { name: "bcrypt", type: "Security" },
-    { name: "OAuth 2.0", type: "Auth" },
-    { name: "Passport.js", type: "Auth" },
-    { name: "Nodemailer", type: "Email" },
-    { name: "MongoDB", type: "Database" },
-    { name: "Mongoose", type: "ODM" },
-    { name: "MongoDB Atlas", type: "Cloud DB" },
-    { name: "Cloudinary", type: "Media" },
-    { name: "Git", type: "Version Control" },
-    { name: "GitHub", type: "Repo" },
-    { name: "Postman", type: "API Tool" },
-    { name: "VS Code", type: "Editor" },
-    { name: "Vercel", type: "Deployment" },
-    { name: "Render", type: "Deployment" },
+    // Languages
+    { name: "JavaScript", type: "Language", icon: "devicon-javascript-plain colored" },
+    { name: "Python", type: "Language", icon: "devicon-python-plain colored" },
+    { name: "HTML5", type: "Markup", icon: "devicon-html5-plain colored" },
+    { name: "CSS3", type: "Styling", icon: "devicon-css3-plain colored" },
+
+    // Frontend
+    { name: "React.js", type: "Frontend", icon: "devicon-react-original colored" },
+    { name: "Redux Toolkit", type: "Frontend", icon: "devicon-redux-original colored" },
+    { name: "Tailwind CSS", type: "Styling", icon: "devicon-tailwindcss-original colored" },
+    { name: "Framer Motion", type: "Frontend", icon: "ri-play-circle-line text-purple-400" },
+    { name: "Context API", type: "State Mgmt", icon: "ri-bubble-chart-line text-blue-400" },
+    { name: "React Router", type: "Routing", icon: "ri-route-line text-red-400" },
+    { name: "Vite", type: "Build Tool", icon: "devicon-vite-plain colored" },
+
+    // Backend & APIs
+    { name: "Node.js", type: "Backend", icon: "devicon-nodejs-plain colored" },
+    { name: "Express.js", type: "Backend", icon: "devicon-express-original text-gray-400" },
+    { name: "REST API", type: "API", icon: "ri-api-line text-emerald-400" },
+    { name: "Socket.io", type: "Real-time", icon: "devicon-socketio-original text-white" },
+    { name: "Redis", type: "Backend", icon: "devicon-redis-plain colored" },
+    { name: "BullMQ", type: "Queue", icon: "ri-list-settings-line text-orange-500" },
+    { name: "Nodemailer", type: "Email", icon: "ri-mail-send-line text-blue-500" },
+
+    // Databases & ORMs
+    { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored" },
+    { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain" },
+    { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500" },
+    { name: "MySQL", type: "Database", icon: "devicon-mysql-plain colored" },
+    { name: "Prisma", type: "Database/ORM", icon: "devicon-prisma-original text-white" },
+
+    // Security & Auth
+    { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400" },
+    { name: "bcrypt", type: "Security", icon: "ri-lock-password-line text-yellow-500" },
+    { name: "OAuth 2.0", type: "Auth", icon: "devicon-oauth-plain colored" },
+    { name: "Passport.js", type: "Auth", icon: "ri-passport-line text-sky-400" },
+
+    // Media & Storage
+    { name: "Cloudinary", type: "Media", icon: "ri-image-line text-cyan-400" },
+
+    // Developer Tools & Version Control
+    { name: "Git", type: "Version Control", icon: "devicon-git-plain colored" },
+    { name: "GitHub", type: "Repo", icon: "devicon-github-original text-white" },
+    { name: "Postman", type: "API Tool", icon: "devicon-postman-plain colored" },
+    { name: "VS Code", type: "Editor", icon: "devicon-vscode-plain colored" },
+    { name: "npm", type: "Package Mgmt", icon: "devicon-npm-original-wordmark colored" },
+
+    // Deployment
+    { name: "Vercel", type: "Deployment", icon: "devicon-vercel-original text-white" },
+    { name: "Render", type: "Deployment", icon: "ri-server-line text-indigo-400" },
+    { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored" },
   ];
 
   const stats = [
