@@ -19,7 +19,7 @@ const Projects = () => {
     },
     {
       title: "Notewave",
-      desc: "Production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, restore, and permanent delete; image/audio attachments via Cloudinary.",
+      desc: "A secure, full-featured notes app built to solve privacy and asset management problems for students and professionals. Features a production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, restore, and permanent delete; image/audio attachments via Cloudinary.",
       tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary", "Passport.js"],
       live: "https://notewave-frontend.vercel.app",
       github: "https://github.com/prashantjha1448/notewave-frontend",
@@ -27,7 +27,7 @@ const Projects = () => {
     },
     {
       title: "Lokpriyatam",
-      desc: "Responsive front-end for a tea stall business, showcasing the brand's identity with a modern UI, product range, franchise info, and contact integration.",
+      desc: "A modern digital storefront built to solve the online presence and franchise expansion challenges for a local tea stall business. Features a responsive front-end for a tea stall business, showcasing the brand's identity with a modern UI, product range, franchise info, and contact integration.",
       tech: ["React", "Tailwind CSS"],
       live: "#",
       github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",

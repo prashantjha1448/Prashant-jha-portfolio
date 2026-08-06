@@ -112,7 +112,7 @@ const Title = () => {
               letterSpacing: "0.05em",
             }}
           >
-            Full Stack Developer · MERN · Creative Coder
+            Full Stack Developer · Founder @ WorkQuora · MERN
           </h3>
         </div>
 

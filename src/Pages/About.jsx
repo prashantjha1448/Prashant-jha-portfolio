@@ -86,19 +86,19 @@ const About = () => {
             className="md:col-span-7 flex flex-col gap-6 text-gray-300 text-sm md:text-base leading-relaxed"
           >
             <p>
-              I'm a Full Stack MERN Developer passionate about building scalable, secure, and user-focused web applications. I enjoy transforming ideas into real-world digital products with clean architecture and modern UI.
+              I build products end-to-end. Right now that's WorkQuora — a KYC-verified local services marketplace connecting India's skilled workers (plumbers, electricians, cooks, carpenters, mechanics) with local clients — designed, built, and shipped to production solo.
             </p>
             <p>
-              My expertise includes React.js, Node.js, Express.js, MongoDB, JavaScript, TypeScript, REST APIs, JWT Authentication, OAuth 2.0, Email OTP Verification, Two-Factor Authentication (2FA), Cloudinary, and production deployment. I focus on writing clean, maintainable, and high-performance code following industry best practices.
+              My stack: React.js, Node.js, Express.js, MongoDB, JavaScript, TypeScript, REST APIs, JWT Authentication, OAuth 2.0, Email OTP Verification, Two-Factor Authentication (2FA), Cloudinary, Redis, Socket.io, and production deployment. I focus on clean, maintainable, high-performance code.
             </p>
             <p>
-              I have experience building authentication systems, admin dashboards, and full-stack applications while continuously improving performance, scalability, and user experience.
+              I've built authentication systems, admin dashboards, real-time tracking, and full-stack applications end to end — while continuously improving performance, scalability, and security.
             </p>
             <p>
-              Beyond web development, I'm actively exploring Generative AI, Prompt Engineering, and modern development tools to stay ahead of evolving technologies.
+              Beyond WorkQuora, I take on freelance full-stack development work and I'm actively exploring Generative AI and prompt engineering.
             </p>
             <p className="font-medium text-white/90">
-              My goal is to build impactful digital products, solve real-world problems, and continuously grow as a software engineer.
+              My goal is to build impactful digital products, solve real-world problems, and keep growing as a founder and engineer.
             </p>
           </div>
 
