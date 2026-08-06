@@ -25,7 +25,7 @@ const Experience = () => {
       period: "2023 – 2026",
       title: "B.Tech in Computer Science",
       place: "Lakshmi Narain College of Technology, Bhopal",
-      desc: "Currently pursuing Bachelor's in CSE. Building production-grade MERN apps, implementing full auth pipelines, and learning AI fundamentals.",
+      desc: "Completed Bachelor's in Computer Science & Engineering. Built production-grade MERN apps, implemented full auth pipelines, and mastered core computer science fundamentals.",
       color: "#3b82f6",
       icon: "ri-graduation-cap-line",
     },

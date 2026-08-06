@@ -57,7 +57,7 @@ const Contact = () => {
 
   const socialLinks = [
     { icon: "ri-github-line", href: "https://github.com/prashantjha1448", label: "GitHub", color: "#fff" },
-    { icon: "ri-linkedin-line", href: "https://linkedin.com/in/prashantjha1448", label: "LinkedIn", color: "#3b82f6" },
+    { icon: "ri-linkedin-line", href: "https://linkedin.com/in/prashant-jha-dev", label: "LinkedIn", color: "#3b82f6" },
     { icon: "ri-twitter-x-line", href: "https://x.com/Prashantjha1448", label: "X (Twitter)", color: "#1da1f2" },
     { icon: "ri-file-download-line", href: "/resume.pdf", label: "View Resume", color: "#10b981" },
   ];
