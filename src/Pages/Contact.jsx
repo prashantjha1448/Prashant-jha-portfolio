@@ -390,7 +390,12 @@ const Contact = () => {
       {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 py-6 border-t border-white/5 bg-black/10 backdrop-blur-md hidden md:block">
         <div className="max-w-6xl mx-auto flex justify-between items-center px-6 text-gray-500 text-[11px] font-mono uppercase tracking-wider">
-          <p>© 2026 Prashant Jha</p>
+          <div className="flex items-center gap-4">
+            <p>© 2026 Prashant Jha</p>
+            <span className="text-[10px] text-purple-400/80 font-mono font-normal">
+              • Last updated: September 2026
+            </span>
+          </div>
           <div className="flex gap-6">
             {["About", "Projects", "Experience", "Contact"].map((l) => (
               <button

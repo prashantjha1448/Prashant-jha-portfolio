@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Title from '../Components/Title'
+import CurrentlyBuildingWidget from '../Components/CurrentlyBuildingWidget'
 import { gsap } from 'gsap'
 
 const Hero = () => {
@@ -134,8 +135,9 @@ const Hero = () => {
         }}
       />
 
-      {/* Title */}
-      <div className="relative z-10 text-center">
+      {/* Title & Status Widget */}
+      <div className="relative z-10 text-center flex flex-col items-center">
+        <CurrentlyBuildingWidget />
         <Title />
       </div>
 
