@@ -30,29 +30,14 @@ const Title = () => {
       delay: 0.2,
     });
 
-    // GSAP: Name animation target based on theme
-    const targetColor = theme === "light" ? "#0f172a" : "#ffffff";
-    const targetShadow = theme === "light" ? "none" : "0 0 40px rgba(168,85,247,0.4)";
-
-    const tl = gsap.timeline({ delay: 0.5 });
+    // GSAP: Name scale & fade in (runs ONCE on mount)
+    const tl = gsap.timeline({ delay: 0.4 });
     tl.fromTo(
       nameRef.current,
-      {
-        scale: 1.9,
-        opacity: 0,
-        color: theme === "light" ? "#94a3b8" : "#1e2435",
-        textShadow: "none",
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        color: targetColor,
-        textShadow: targetShadow,
-        duration: 1.2,
-        ease: "power4.out",
-      }
+      { scale: 1.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 1.1, ease: "power4.out" }
     ).to(nameRef.current, {
-      scale: 1.05,
+      scale: 1.04,
       duration: 0.15,
       ease: "power2.in",
       yoyo: true,
@@ -61,16 +46,16 @@ const Title = () => {
 
     // Sub elements stagger
     gsap.from([subRef.current, paraRef.current, btnsRef.current], {
-      y: 30,
+      y: 25,
       opacity: 0,
       duration: 0.8,
-      stagger: 0.15,
+      stagger: 0.12,
       ease: "power3.out",
-      delay: 1.2,
+      delay: 1.0,
     });
 
     return () => window.removeEventListener("scroll", updateProgress);
-  }, [theme]);
+  }, []); // Run ONCE on mount so theme toggling never re-triggers animation glitches
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -83,8 +68,7 @@ const Title = () => {
       {/* Badge */}
       <div
         ref={badgeRef}
-        className="px-4 py-1.5 rounded-full border border-purple-500/40 text-purple-400 text-sm backdrop-blur-sm"
-        style={{ background: theme === "light" ? "#f3e8ff" : "rgba(168,85,247,0.08)" }}
+        className="px-4 py-1.5 rounded-full border border-purple-500/30 text-purple-400 text-sm backdrop-blur-sm bg-purple-500/10 font-mono"
       >
         <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse" />
         Available for freelance work
@@ -94,7 +78,7 @@ const Title = () => {
       <div>
         <h1
           ref={nameRef}
-          className="font-black text-white"
+          className="font-black text-slate-900 dark:text-white transition-colors duration-300"
           style={{
             fontSize: "clamp(3rem, 10vw, 7rem)",
             letterSpacing: "-0.02em",
@@ -106,24 +90,13 @@ const Title = () => {
           Prashant Jha
         </h1>
 
-        <div ref={subRef}>
-          <h3
-            className="text-lg md:text-xl mt-3"
-            style={{
-              background: theme === "light"
-                ? "linear-gradient(to right, #2563eb, #7c3aed)"
-                : "linear-gradient(to right, #60a5fa, #c084fc)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              fontFamily: "'Courier New', monospace",
-              letterSpacing: "0.05em",
-            }}
-          >
+        <div ref={subRef} className="mt-3">
+          <h3 className="text-lg md:text-xl font-mono font-semibold tracking-wider bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:to-purple-300 bg-clip-text text-transparent inline-block py-1">
             Full Stack Developer · Founder @ WorkQuora · MERN
           </h3>
         </div>
 
-        <p ref={paraRef} className="text-gray-500 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
+        <p ref={paraRef} className="text-slate-600 dark:text-gray-400 mt-4 max-w-xl mx-auto text-sm leading-relaxed">
           Crafting immersive, high-performance web experiences with production-grade
           architecture, pixel-perfect UI and clean scalable code.
         </p>
@@ -145,7 +118,7 @@ const Title = () => {
 
         <button
           onClick={() => scrollTo("contact")}
-          className="px-6 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition text-sm"
+          className="px-6 py-3 rounded-full border border-slate-300 dark:border-white/20 text-slate-700 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition text-sm font-medium bg-white dark:bg-transparent cursor-pointer"
         >
           Get In Touch
         </button>

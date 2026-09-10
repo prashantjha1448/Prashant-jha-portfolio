@@ -18,6 +18,21 @@
    WORKQUORA-INSPIRED LIGHT MODE THEME OVERRIDES
    ========================================================= */
 
+/* Preserve background-clip and text-transparent for gradient text */
+.text-transparent,
+html.light .text-transparent,
+html.dark .text-transparent {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+.bg-clip-text,
+html.light .bg-clip-text,
+html.dark .bg-clip-text {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
 /* 1. Global Page, Root & Section Backgrounds */
 html.light body,
 html.light #root,
@@ -27,10 +42,8 @@ html.light .bg-\[\#0b0f1a\],
 html.light .bg-\[\#090d16\],
 html.light .bg-\[\#080c14\],
 html.light .bg-\[\#09090F\],
-html.light .bg-\[\#10131D\],
-html.light .bg-gradient-to-b {
+html.light .bg-\[\#10131D\] {
   background-color: #f8fafc !important;
-  background-image: none !important;
   color: #0f172a !important;
 }
 
