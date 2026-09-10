@@ -2,10 +2,12 @@ import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTheme } from "../context/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Projects = () => {
+  const { theme } = useTheme();
   const sectionRef = useRef(null);
 
   const featuredProjects = [
@@ -75,11 +77,13 @@ const Projects = () => {
     return () => ctx.revert();
   }, []);
 
+  const isLight = theme === "light";
+
   return (
     <section
       id="projects"
       ref={sectionRef}
-      className="w-full min-h-screen bg-[#0b0f1a] text-white px-6 py-24"
+      className="w-full min-h-screen text-white px-6 py-24 transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto">
 
@@ -89,7 +93,7 @@ const Projects = () => {
             Portfolio
           </h4>
           <h1
-            className="text-4xl md:text-6xl font-black"
+            className="text-4xl md:text-6xl font-black text-white"
             style={{ fontFamily: "'Georgia', serif" }}
           >
             Featured Projects
@@ -112,20 +116,36 @@ const Projects = () => {
                 key={i}
                 className="project-card group rounded-3xl overflow-hidden relative flex flex-col transition-all duration-500 cursor-default p-7 md:p-8"
                 style={{
-                  border: `1px solid ${project.accent}30`,
-                  background: `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`,
-                  boxShadow: `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`,
+                  border: isLight ? `1px solid rgba(0,0,0,0.08)` : `1px solid ${project.accent}30`,
+                  background: isLight
+                    ? "#ffffff"
+                    : `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`,
+                  boxShadow: isLight
+                    ? "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 6px -1px rgba(0,0,0,0.02)"
+                    : `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.border = `1px solid ${project.accent}70`;
-                  e.currentTarget.style.background = `linear-gradient(145deg, ${project.accent}12 0%, rgba(255,255,255,0.05) 100%)`;
-                  e.currentTarget.style.boxShadow = `0 0 50px ${project.accent}25, 0 20px 60px rgba(0,0,0,0.5)`;
+                  e.currentTarget.style.border = isLight
+                    ? `1px solid ${project.accent}`
+                    : `1px solid ${project.accent}70`;
+                  e.currentTarget.style.background = isLight
+                    ? "#ffffff"
+                    : `linear-gradient(145deg, ${project.accent}12 0%, rgba(255,255,255,0.05) 100%)`;
+                  e.currentTarget.style.boxShadow = isLight
+                    ? `0 12px 35px ${project.accent}20, 0 4px 15px rgba(0,0,0,0.05)`
+                    : `0 0 50px ${project.accent}25, 0 20px 60px rgba(0,0,0,0.5)`;
                   e.currentTarget.style.transform = "translateY(-6px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.border = `1px solid ${project.accent}30`;
-                  e.currentTarget.style.background = `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`;
-                  e.currentTarget.style.boxShadow = `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`;
+                  e.currentTarget.style.border = isLight
+                    ? `1px solid rgba(0,0,0,0.08)`
+                    : `1px solid ${project.accent}30`;
+                  e.currentTarget.style.background = isLight
+                    ? "#ffffff"
+                    : `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`;
+                  e.currentTarget.style.boxShadow = isLight
+                    ? "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 6px -1px rgba(0,0,0,0.02)"
+                    : `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`;
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
@@ -165,7 +185,7 @@ const Projects = () => {
                     )}
                   </div>
 
-                  <p className="text-xs font-mono text-purple-300/80 uppercase tracking-wide">
+                  <p className="text-xs font-mono text-purple-400 uppercase tracking-wide">
                     {project.subtitle}
                   </p>
                 </div>
@@ -182,7 +202,7 @@ const Projects = () => {
                       key={idx}
                       className="px-2.5 py-1 text-xs rounded-full font-mono font-medium"
                       style={{
-                        background: `${project.accent}18`,
+                        background: isLight ? `${project.accent}12` : `${project.accent}18`,
                         color: project.accent,
                         border: `1px solid ${project.accent}35`,
                       }}
@@ -209,7 +229,11 @@ const Projects = () => {
                   <Link
                     to={`/projects/${project.slug}`}
                     className="flex-1 min-w-[120px] text-center px-4 py-2.5 rounded-full text-xs font-semibold border hover:bg-white/10 transition"
-                    style={{ borderColor: `${project.accent}50`, color: project.accent }}
+                    style={{
+                      borderColor: isLight ? `#cbd5e1` : `${project.accent}50`,
+                      color: isLight ? `#334155` : project.accent,
+                      background: isLight ? `#ffffff` : `transparent`,
+                    }}
                   >
                     Case Study
                   </Link>
@@ -219,7 +243,11 @@ const Projects = () => {
                       target="_blank"
                       rel="noreferrer"
                       className="px-4 py-2.5 rounded-full text-xs border hover:bg-white/10 transition"
-                      style={{ borderColor: "rgba(255,255,255,0.18)" }}
+                      style={{
+                        borderColor: isLight ? `#cbd5e1` : "rgba(255,255,255,0.18)",
+                        color: isLight ? `#334155` : "#ffffff",
+                        background: isLight ? `#ffffff` : `transparent`,
+                      }}
                     >
                       <i className="ri-github-line" />
                     </a>
@@ -244,19 +272,20 @@ const Projects = () => {
                 key={i}
                 className="project-card group rounded-2xl overflow-hidden relative flex flex-col transition-all duration-400 cursor-default p-6"
                 style={{
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  background: "rgba(255,255,255,0.03)",
+                  border: isLight ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.07)",
+                  background: isLight ? "#ffffff" : "rgba(255,255,255,0.03)",
+                  boxShadow: isLight ? "0 2px 10px rgba(0,0,0,0.04)" : "none",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.border = `1px solid ${project.accent}50`;
-                  e.currentTarget.style.background = `${project.accent}08`;
-                  e.currentTarget.style.boxShadow = `0 0 35px ${project.accent}20, 0 15px 45px rgba(0,0,0,0.3)`;
+                  e.currentTarget.style.border = isLight ? `1px solid ${project.accent}` : `1px solid ${project.accent}50`;
+                  e.currentTarget.style.background = isLight ? "#ffffff" : `${project.accent}08`;
+                  e.currentTarget.style.boxShadow = isLight ? `0 10px 30px ${project.accent}18` : `0 0 35px ${project.accent}20, 0 15px 45px rgba(0,0,0,0.3)`;
                   e.currentTarget.style.transform = "translateY(-5px)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.07)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.boxShadow = "none";
+                  e.currentTarget.style.border = isLight ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.07)";
+                  e.currentTarget.style.background = isLight ? "#ffffff" : "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.boxShadow = isLight ? "0 2px 10px rgba(0,0,0,0.04)" : "none";
                   e.currentTarget.style.transform = "translateY(0)";
                 }}
               >
@@ -288,7 +317,7 @@ const Projects = () => {
                         key={idx}
                         className="px-2 py-0.5 text-[11px] rounded-full font-mono"
                         style={{
-                          background: `${project.accent}15`,
+                          background: isLight ? `${project.accent}12` : `${project.accent}15`,
                           color: project.accent,
                           border: `1px solid ${project.accent}30`,
                         }}
@@ -305,7 +334,7 @@ const Projects = () => {
                         href={project.live}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex-1 text-center px-3 py-2 rounded-full text-xs font-medium transition-opacity hover:opacity-90"
+                        className="flex-1 text-center px-3 py-2 rounded-full text-xs font-medium transition-opacity hover:opacity-90 shadow-md"
                         style={{
                           background: `linear-gradient(to right, ${project.accent}, ${project.accent}bb)`,
                           color: "#fff",
@@ -317,7 +346,11 @@ const Projects = () => {
                     <Link
                       to={`/projects/${project.slug}`}
                       className="flex-1 text-center px-3 py-2 rounded-full text-xs font-medium border hover:bg-white/10 transition"
-                      style={{ borderColor: `${project.accent}50`, color: project.accent }}
+                      style={{
+                        borderColor: isLight ? `#cbd5e1` : `${project.accent}50`,
+                        color: isLight ? `#334155` : project.accent,
+                        background: isLight ? `#ffffff` : `transparent`,
+                      }}
                     >
                       Case Study
                     </Link>
@@ -327,7 +360,11 @@ const Projects = () => {
                         target="_blank"
                         rel="noreferrer"
                         className="px-3 py-2 rounded-full text-xs border hover:bg-white/10 transition"
-                        style={{ borderColor: "rgba(255,255,255,0.15)" }}
+                        style={{
+                          borderColor: isLight ? `#cbd5e1` : "rgba(255,255,255,0.15)",
+                          color: isLight ? `#334155` : "#ffffff",
+                          background: isLight ? `#ffffff` : `transparent`,
+                        }}
                       >
                         <i className="ri-github-line" />
                       </a>

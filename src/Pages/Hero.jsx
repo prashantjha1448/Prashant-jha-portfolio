@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import Title from '../Components/Title'
 import CurrentlyBuildingWidget from '../Components/CurrentlyBuildingWidget'
-import { gsap } from 'gsap'
+import { useTheme } from '../context/ThemeContext'
 
 const Hero = () => {
+  const { theme } = useTheme();
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -28,7 +29,9 @@ const Hero = () => {
       particles.forEach((p) => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(168,85,247,${p.alpha})`;
+        ctx.fillStyle = theme === "light"
+          ? `rgba(37,99,235,${p.alpha})`
+          : `rgba(168,85,247,${p.alpha})`;
         ctx.fill();
         p.x += p.dx;
         p.y += p.dy;
@@ -60,13 +63,12 @@ const Hero = () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMove);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <section
       id="hero"
-      className="w-full min-h-screen flex flex-col items-center justify-center text-white relative px-6 overflow-hidden"
-      style={{ background: "#0b0f1a" }}
+      className="w-full min-h-screen flex flex-col items-center justify-center text-white relative px-6 overflow-hidden transition-colors duration-300"
     >
       {/* Cursor glow */}
       <div
@@ -76,7 +78,9 @@ const Hero = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)',
+          background: theme === "light"
+            ? 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(168,85,247,0.06) 0%, transparent 70%)',
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
           zIndex: 1,
@@ -100,8 +104,9 @@ const Hero = () => {
         style={{
           position: 'absolute',
           inset: 0,
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
+          backgroundImage: theme === "light"
+            ? 'linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)'
+            : 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
           zIndex: 0,
         }}
@@ -116,7 +121,9 @@ const Hero = () => {
           width: '300px',
           height: '300px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)',
+          background: theme === "light"
+            ? 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)',
           filter: 'blur(40px)',
           zIndex: 0,
         }}
@@ -129,7 +136,9 @@ const Hero = () => {
           width: '400px',
           height: '400px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)',
+          background: theme === "light"
+            ? 'radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%)',
           filter: 'blur(50px)',
           zIndex: 0,
         }}
@@ -143,12 +152,14 @@ const Hero = () => {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500 z-10">
-        <span className="text-xs tracking-widest uppercase">Scroll to explore</span>
+        <span className="text-xs tracking-widest uppercase font-mono">Scroll to explore</span>
         <div
           style={{
             width: '1px',
             height: '40px',
-            background: 'linear-gradient(to bottom, rgba(168,85,247,0.8), transparent)',
+            background: theme === "light"
+              ? 'linear-gradient(to bottom, rgba(37,99,235,0.8), transparent)'
+              : 'linear-gradient(to bottom, rgba(168,85,247,0.8), transparent)',
             animation: 'scrollLine 2s ease-in-out infinite',
           }}
         />

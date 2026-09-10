@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { useTheme } from '../context/ThemeContext'
 
 const Title = () => {
+  const { theme } = useTheme();
   const nameRef = useRef(null);
   const badgeRef = useRef(null);
   const subRef = useRef(null);
@@ -28,21 +30,24 @@ const Title = () => {
       delay: 0.2,
     });
 
-    // GSAP: Name - dark to light + scale 1.9 → 2.2 → 1
+    // GSAP: Name animation target based on theme
+    const targetColor = theme === "light" ? "#0f172a" : "#ffffff";
+    const targetShadow = theme === "light" ? "none" : "0 0 40px rgba(168,85,247,0.4)";
+
     const tl = gsap.timeline({ delay: 0.5 });
     tl.fromTo(
       nameRef.current,
       {
         scale: 1.9,
         opacity: 0,
-        color: "#1e2435",
+        color: theme === "light" ? "#94a3b8" : "#1e2435",
         textShadow: "none",
       },
       {
         scale: 1,
         opacity: 1,
-        color: "#ffffff",
-        textShadow: "0 0 40px rgba(168,85,247,0.4)",
+        color: targetColor,
+        textShadow: targetShadow,
         duration: 1.2,
         ease: "power4.out",
       }
@@ -65,7 +70,7 @@ const Title = () => {
     });
 
     return () => window.removeEventListener("scroll", updateProgress);
-  }, []);
+  }, [theme]);
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
@@ -79,7 +84,7 @@ const Title = () => {
       <div
         ref={badgeRef}
         className="px-4 py-1.5 rounded-full border border-purple-500/40 text-purple-400 text-sm backdrop-blur-sm"
-        style={{ background: "rgba(168,85,247,0.08)" }}
+        style={{ background: theme === "light" ? "#f3e8ff" : "rgba(168,85,247,0.08)" }}
       >
         <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse" />
         Available for freelance work
@@ -105,7 +110,9 @@ const Title = () => {
           <h3
             className="text-lg md:text-xl mt-3"
             style={{
-              background: "linear-gradient(to right, #60a5fa, #c084fc)",
+              background: theme === "light"
+                ? "linear-gradient(to right, #2563eb, #7c3aed)"
+                : "linear-gradient(to right, #60a5fa, #c084fc)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               fontFamily: "'Courier New', monospace",
@@ -126,13 +133,13 @@ const Title = () => {
       <div ref={btnsRef} className="flex gap-4 mt-2">
         <button
           onClick={() => scrollTo("projects")}
-          className="px-6 py-3 rounded-full text-white font-medium text-sm relative overflow-hidden group"
-          style={{ background: "linear-gradient(to right, #3b82f6, #a855f7)" }}
+          className="px-6 py-3 rounded-full text-white font-medium text-sm relative overflow-hidden group shadow-md"
+          style={{ background: "linear-gradient(to right, #2563eb, #7c3aed)" }}
         >
           <span className="relative z-10">Explore My Work</span>
           <span
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            style={{ background: "linear-gradient(to right, #a855f7, #3b82f6)" }}
+            style={{ background: "linear-gradient(to right, #7c3aed, #2563eb)" }}
           />
         </button>
 
