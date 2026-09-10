@@ -4,13 +4,21 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+const PROJECT_LINKS = {
+  WorkQuora: "https://www.workquora.com",
+  "CHH School Management System": "https://chh-school-management-system.vercel.app/",
+  Notewave: "https://notewave-frontend.vercel.app",
+  Lokpriyatam: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
+  "General Portfolio": "https://prashant-jha-portfolio.vercel.app",
+};
+
 // @route   GET /api/reviews
 // @desc    Get all public reviews/testimonials
 // @access  Public
 router.get("/", async (req, res) => {
   try {
     const reviews = await Review.find()
-      .populate("user", "name email avatar kycStatus")
+      .populate("user", "name email avatar city authProvider kycStatus")
       .sort({ createdAt: -1 });
 
     return res.json(reviews);
@@ -25,7 +33,7 @@ router.get("/", async (req, res) => {
 // @access  Private (Registered/Logged-in Visitors)
 router.post("/", protect, async (req, res) => {
   try {
-    const { rating, comment } = req.body;
+    const { rating, comment, project, city } = req.body;
 
     // Validation
     const parsedRating = Number(rating);
@@ -43,14 +51,24 @@ router.post("/", protect, async (req, res) => {
       return res.status(400).json({ message: "You have already submitted a review. Thank you for your feedback!" });
     }
 
+    const targetProject = project || "WorkQuora";
+    const targetCity = city || req.user.city || "India";
+    const isVerified = req.user.authProvider === "google" || req.user.kycStatus === "verified";
+
     const review = await Review.create({
       user: req.user._id,
+      project: targetProject,
+      projectLink: PROJECT_LINKS[targetProject] || "",
       rating: parsedRating,
       comment: comment.trim(),
-      verified: req.user.kycStatus === "verified",
+      city: targetCity,
+      verified: isVerified,
     });
 
-    const populatedReview = await Review.findById(review._id).populate("user", "name email avatar kycStatus");
+    const populatedReview = await Review.findById(review._id).populate(
+      "user",
+      "name email avatar city authProvider kycStatus"
+    );
 
     return res.status(201).json(populatedReview);
   } catch (error) {
@@ -73,7 +91,6 @@ router.delete("/:id", protect, async (req, res) => {
       return res.status(404).json({ message: "Review not found." });
     }
 
-    // Check ownership or admin status
     if (review.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
       return res.status(403).json({ message: "Not authorized to delete this review." });
     }

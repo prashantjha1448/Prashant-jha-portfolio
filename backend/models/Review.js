@@ -8,6 +8,15 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       unique: true, // Rate limiting: 1 review per user
     },
+    project: {
+      type: String,
+      enum: ["WorkQuora", "CHH School Management System", "Notewave", "Lokpriyatam", "General Portfolio"],
+      default: "WorkQuora",
+    },
+    projectLink: {
+      type: String,
+      default: "",
+    },
     rating: {
       type: Number,
       required: [true, "Rating is required"],
@@ -21,9 +30,13 @@ const reviewSchema = new mongoose.Schema(
       minlength: [5, "Comment must be at least 5 characters"],
       maxlength: [500, "Comment cannot exceed 500 characters"],
     },
+    city: {
+      type: String,
+      default: "India",
+    },
     verified: {
       type: Boolean,
-      default: false, // Forward compatibility for payment/KYC verification
+      default: false, // True for Google OAuth or verified users
     },
   },
   {

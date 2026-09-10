@@ -24,6 +24,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    city: {
+      type: String,
+      default: "India",
+    },
+    location: {
+      lat: Number,
+      lng: Number,
+    },
+    authProvider: {
+      type: String,
+      enum: ["email", "google"],
+      default: "email",
+    },
     role: {
       type: String,
       enum: ["visitor", "admin"],

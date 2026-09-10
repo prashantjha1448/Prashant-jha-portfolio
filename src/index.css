@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html.light {
+    color-scheme: light;
+  }
+
+  body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+/* Light mode overrides for background and text containers */
+html.light body,
+html.light .bg-\[\#0b0f1a\],
+html.light .bg-\[\#080c14\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-\[\#111726\],
+html.light .bg-\[\#0d1222\],
+html.light .bg-\[\#161c2e\],
+html.light .bg-\[\#0f1422\] {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-gray-300 {
+  color: #334155 !important;
+}
+
+html.light .text-gray-400 {
+  color: #475569 !important;
+}
+
+html.light .text-gray-200 {
+  color: #1e293b !important;
+}
+
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+html.light .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+html.light .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light nav.bg-\[\#0b0f1a\]\/80 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html.light .shadow-2xl {
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1) !important;
+}

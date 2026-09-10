@@ -59,20 +59,25 @@ const CurrentlyBuildingWidget = () => {
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500"></span>
         </span>
 
-        <span className="text-[11px] font-mono text-purple-300 font-semibold tracking-wide flex items-center gap-1.5">
+        <span className="text-[11px] font-mono text-purple-300 font-semibold tracking-wide flex items-center gap-1.5 flex-wrap">
           <span className="text-gray-400 font-normal">CURRENTLY BUILDING:</span>
-          {status.link ? (
-            <a
-              href={status.link}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-white underline decoration-purple-500/50 underline-offset-4 transition"
-            >
-              {status.title}
-            </a>
-          ) : (
-            <span>{status.title}</span>
-          )}
+          <a
+            href="https://www.workquora.com"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-white underline decoration-purple-500/50 underline-offset-4 transition"
+          >
+            WorkQuora v2
+          </a>
+          <span className="text-gray-500 font-normal">&</span>
+          <a
+            href="https://chh-school-management-system.vercel.app/"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-white underline decoration-purple-500/50 underline-offset-4 transition"
+          >
+            CHH School Ecosystem
+          </a>
         </span>
 
         {/* Admin Edit Trigger */}

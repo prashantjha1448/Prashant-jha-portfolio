@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, openAuthModal, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,8 +63,18 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Action Buttons (Auth & Hire Me) */}
+        {/* Action Buttons (Auth, Theme & Hire Me) */}
         <div className="hidden md:flex items-center gap-4">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition cursor-pointer"
+            title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+            aria-label="Toggle theme"
+          >
+            <i className={theme === "dark" ? "ri-sun-line text-amber-400" : "ri-moon-line text-indigo-400"} />
+          </button>
+
           {user ? (
             <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-full py-1.5 px-3.5 text-xs text-white">
               <span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-300 font-bold flex items-center justify-center font-mono border border-purple-500/30">
@@ -96,14 +108,25 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Hamburger Icon */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-white hover:text-purple-400 transition text-2xl focus:outline-none cursor-pointer"
-          aria-label="Toggle navigation menu"
-        >
-          <i className={isOpen ? "ri-close-line" : "ri-menu-3-line"}></i>
-        </button>
+        {/* Mobile Controls (Theme Toggle & Hamburger) */}
+        <div className="md:hidden flex items-center gap-3">
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 rounded-full border border-white/15 bg-white/5 flex items-center justify-center text-gray-300 hover:text-white transition cursor-pointer"
+            title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+            aria-label="Toggle theme"
+          >
+            <i className={theme === "dark" ? "ri-sun-line text-amber-400" : "ri-moon-line text-indigo-400"} />
+          </button>
+
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-white hover:text-purple-400 transition text-2xl focus:outline-none cursor-pointer"
+            aria-label="Toggle navigation menu"
+          >
+            <i className={isOpen ? "ri-close-line" : "ri-menu-3-line"}></i>
+          </button>
+        </div>
 
       </div>
 

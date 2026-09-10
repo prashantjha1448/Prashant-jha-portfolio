@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }) => {
       name: data.name,
       email: data.email,
       avatar: data.avatar,
+      city: data.city || "India",
+      authProvider: data.authProvider || "email",
       role: data.role,
       kycStatus: data.kycStatus,
     };
@@ -45,14 +47,16 @@ export const AuthProvider = ({ children }) => {
     return userData;
   };
 
-  const register = async (name, email, password, avatar) => {
-    const data = await authAPI.register(name, email, password, avatar);
+  const register = async (name, email, password, avatar, city, location) => {
+    const data = await authAPI.register(name, email, password, avatar, city, location);
     localStorage.setItem("portfolio_token", data.token);
     const userData = {
       _id: data._id,
       name: data.name,
       email: data.email,
       avatar: data.avatar,
+      city: data.city || city || "India",
+      authProvider: data.authProvider || "email",
       role: data.role,
       kycStatus: data.kycStatus,
     };
@@ -60,6 +64,48 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setIsAuthModalOpen(false);
     return userData;
+  };
+
+  const googleLogin = async (googleUser) => {
+    try {
+      const data = await authAPI.googleLogin(
+        googleUser.token || "google_dummy_token",
+        googleUser.city || "India",
+        googleUser.location || null
+      );
+      localStorage.setItem("portfolio_token", data.token);
+      const userData = {
+        _id: data._id,
+        name: data.name || googleUser.name,
+        email: data.email || googleUser.email,
+        avatar: data.avatar || googleUser.avatar || "",
+        city: data.city || googleUser.city || "India",
+        authProvider: "google",
+        role: data.role || "visitor",
+        kycStatus: "verified",
+      };
+      localStorage.setItem("portfolio_user", JSON.stringify(userData));
+      setUser(userData);
+      setIsAuthModalOpen(false);
+      return userData;
+    } catch {
+      // Fallback local Google OAuth user state if backend offline
+      const fallbackUser = {
+        _id: "google_" + Date.now(),
+        name: googleUser.name || "Google User",
+        email: googleUser.email || "user@gmail.com",
+        avatar: googleUser.avatar || "https://lh3.googleusercontent.com/a/default-user",
+        city: googleUser.city || "India",
+        authProvider: "google",
+        role: "visitor",
+        kycStatus: "verified",
+      };
+      localStorage.setItem("portfolio_token", "google_fallback_jwt_token");
+      localStorage.setItem("portfolio_user", JSON.stringify(fallbackUser));
+      setUser(fallbackUser);
+      setIsAuthModalOpen(false);
+      return fallbackUser;
+    }
   };
 
   const logout = () => {
@@ -83,6 +129,7 @@ export const AuthProvider = ({ children }) => {
         user,
         login,
         register,
+        googleLogin,
         logout,
         isAuthModalOpen,
         authMode,

@@ -73,6 +73,7 @@ const TechStack = () => {
     { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored", category: "database" },
     { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain", category: "database" },
     { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500", category: "database" },
+    { name: "PostgreSQL", type: "Database", icon: "devicon-postgresql-plain colored", category: "database" },
 
     // Security & Auth
     { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400", category: "backend" },

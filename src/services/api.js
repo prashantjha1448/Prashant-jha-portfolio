@@ -33,16 +33,22 @@ const request = async (endpoint, options = {}) => {
 
 // Auth API Methods
 export const authAPI = {
-  register: (name, email, password, avatar) =>
+  register: (name, email, password, avatar, city, location) =>
     request("/auth/register", {
       method: "POST",
-      body: JSON.stringify({ name, email, password, avatar }),
+      body: JSON.stringify({ name, email, password, avatar, city, location }),
     }),
 
   login: (email, password) =>
     request("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
+    }),
+
+  googleLogin: (token, city, location) =>
+    request("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ token, city, location }),
     }),
 
   getProfile: () => request("/auth/me"),
@@ -52,10 +58,10 @@ export const authAPI = {
 export const reviewsAPI = {
   getReviews: () => request("/reviews"),
 
-  createReview: (rating, comment) =>
+  createReview: (rating, comment, project, city) =>
     request("/reviews", {
       method: "POST",
-      body: JSON.stringify({ rating, comment }),
+      body: JSON.stringify({ rating, comment, project, city }),
     }),
 
   deleteReview: (id) =>
