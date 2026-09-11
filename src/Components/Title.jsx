@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useTheme } from "../context/ThemeContext";
 
-// Custom Looping Rotator Typewriter Component (Option #2)
+// Custom Looping Rotator Typewriter Component (Option #2 - Permanent Choice)
 const TypewriterRotator = ({ phrases }) => {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [text, setText] = useState("");
@@ -13,7 +13,7 @@ const TypewriterRotator = ({ phrases }) => {
 
     let timer;
     if (!isDeleting && text !== currentPhrase) {
-      // Typing phase (70ms per character)
+      // Typing phase (75ms per character)
       timer = setTimeout(() => {
         setText(currentPhrase.substring(0, text.length + 1));
       }, 75);
@@ -51,13 +51,6 @@ const Title = () => {
   const subRef = useRef(null);
   const paraRef = useRef(null);
   const btnsRef = useRef(null);
-
-  const typewriterPhrases = [
-    "Full Stack Developer",
-    "Founder @ WorkQuora",
-    "MERN Stack Architect",
-    "Freelance Engineer",
-  ];
 
   useEffect(() => {
     // Update scroll progress bar
@@ -108,12 +101,19 @@ const Title = () => {
     });
 
     return () => window.removeEventListener("scroll", updateProgress);
-  }, []); // Run ONCE on mount so theme toggling never re-triggers animation glitches
+  }, []);
 
   const scrollTo = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
+
+  const typewriterPhrases = [
+    "Full Stack Developer",
+    "Founder @ WorkQuora",
+    "MERN Stack Architect",
+    "Freelance Engineer",
+  ];
 
   return (
     <div className="flex flex-col items-center text-center gap-6">
@@ -143,7 +143,7 @@ const Title = () => {
           Prashant Jha
         </h1>
 
-        {/* Hero Subtitle with Looping Rotator Typewriter Animation (Option #2) */}
+        {/* Hero Subtitle with Looping Rotator Typewriter Animation (Option #2 - Locked) */}
         <div ref={subRef} className="mt-3">
           <h3 className="text-lg md:text-2xl font-mono font-semibold tracking-wider bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:to-purple-300 bg-clip-text text-transparent inline-block py-1">
             <TypewriterRotator phrases={typewriterPhrases} />
