@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -6,67 +6,163 @@ import { useTheme } from "../context/ThemeContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// 3D Parallax Tilt Wrapper Component
+const TiltBentoCard = ({ children, className, style }) => {
+  const cardRef = useRef(null);
+
+  const handleMouseMove = (e) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -5; // 5deg max tilt
+    const rotateY = ((x - centerX) / centerX) * 5;  // 5deg max tilt
+
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+    card.style.transition = "transform 0.1s ease-out";
+  };
+
+  const handleMouseLeave = () => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+    card.style.transition = "transform 0.5s ease-out";
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={className}
+      style={style}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Browser Chrome Frame Header Component
+const BrowserChromeFrame = ({ url, isLive }) => (
+  <div className="w-full bg-slate-900/80 dark:bg-black/60 border-b border-white/10 px-4 py-2.5 flex items-center justify-between rounded-t-3xl backdrop-blur-md select-none">
+    <div className="flex items-center gap-1.5">
+      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
+      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
+      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+    </div>
+
+    <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-3 py-1 rounded-full text-[11px] font-mono text-gray-300 max-w-[200px] sm:max-w-[320px] truncate">
+      <i className="ri-lock-2-line text-emerald-400 text-xs shrink-0" />
+      <span className="truncate">{url}</span>
+    </div>
+
+    <div className="flex items-center gap-1">
+      {isLive ? (
+        <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-mono font-semibold border border-emerald-500/30 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          Live
+        </span>
+      ) : (
+        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 text-[10px] font-mono font-semibold border border-amber-500/30">
+          Dev
+        </span>
+      )}
+    </div>
+  </div>
+);
+
 const Projects = () => {
   const { theme } = useTheme();
   const sectionRef = useRef(null);
+  const isLight = theme === "light";
 
-  const featuredProjects = [
+  const projects = [
     {
       slug: "workquora",
       title: "WorkQuora",
       subtitle: "Flagship Hyperlocal Marketplace",
-      desc: "A hyperlocal marketplace connecting clients with verified nearby workers — electricians, plumbers, AC repair, mechanics, and more. Solves the fragmented, unverified hiring problem in India (WhatsApp groups, Facebook groups, no ratings or KYC) with location-based matching, verified profiles, and real-time job status updates.",
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Redis", "BullMQ", "Socket.io", "JWT", "OAuth 2.0"],
+      desc: "A KYC-verified local services marketplace connecting India's skilled workers (plumbers, electricians, mechanics, cooks) with local clients. Features real-time job dispatching, escrow payments, and native mobile apps.",
+      metrics: [
+        { label: "Verification", val: "100% KYC" },
+        { label: "Security", val: "Escrow Locked" },
+        { label: "Engine", val: "Auto-Dispatch" },
+      ],
+      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Redis", "Socket.io", "JWT"],
       live: "https://www.workquora.com",
+      url: "workquora.com",
       github: "#",
       accent: "#3b82f6",
-      badge: "Live",
       badgeType: "live",
-      featured: true,
+      gridClass: "md:col-span-8",
+      isFlagship: true,
     },
     {
       slug: "chh-school",
       title: "CHH School Management System",
       subtitle: "Complete Educational Ecosystem",
-      desc: "A comprehensive school management ecosystem designed to streamline campus administration, academic tracking, student records, and multi-role workflows across educational operations.",
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS", "JWT"],
+      desc: "Comprehensive school management platform engineered to handle campus administration, student records, fee tracking, and multi-role portal workflows.",
+      metrics: [
+        { label: "Roles", val: "Multi-User" },
+        { label: "Academic", val: "Full Records" },
+        { label: "Portals", val: "Admin & Student" },
+      ],
+      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
       live: "https://chh-school-management-system.vercel.app/",
+      url: "chh-school.vercel.app",
       github: "#",
       accent: "#f59e0b",
-      badge: "In Progress",
       badgeType: "progress",
-      featured: true,
+      gridClass: "md:col-span-4",
+      isFlagship: false,
     },
-  ];
-
-  const secondaryProjects = [
     {
       slug: "notewave",
       title: "Notewave",
-      desc: "A secure, full-featured notes app built to solve privacy and asset management problems for students and professionals. Features a production-ready MERN notes app with JWT, Email OTP, Google OAuth 2.0, and 2FA (TOTP). Full CRUD with soft delete, restore, and permanent delete; image/audio attachments via Cloudinary.",
-      tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary", "Passport.js"],
+      subtitle: "Secure Productivity Notes App",
+      desc: "Production-grade MERN notes application with JWT, Email OTP, Google OAuth 2.0, 2FA security, soft delete recovery, and Cloudinary media uploads.",
+      metrics: [
+        { label: "Security", val: "2FA & OAuth" },
+        { label: "Media", val: "Cloudinary" },
+        { label: "CRUD", val: "Soft Delete" },
+      ],
+      tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary"],
       live: "https://notewave-frontend.vercel.app",
+      url: "notewave.vercel.app",
       github: "https://github.com/prashantjha1448/notewave-frontend",
       accent: "#a855f7",
+      gridClass: "md:col-span-6",
+      isFlagship: false,
     },
     {
       slug: "lokpriyatam",
       title: "Lokpriyatam",
-      desc: "A modern digital storefront built to solve the online presence and franchise expansion challenges for a local tea stall business. Features a responsive front-end for a tea stall business, showcasing the brand's identity with a modern UI, product range, franchise info, and contact integration.",
-      tech: ["React", "Tailwind CSS"],
+      subtitle: "Digital Storefront & Franchise Platform",
+      desc: "Modern responsive digital storefront built for a local tea brand business to accelerate brand presence, showcase menu items, and power franchise expansion.",
+      metrics: [
+        { label: "Design", val: "Modern UI" },
+        { label: "Business", val: "Franchise Module" },
+        { label: "Speed", val: "Lighthouse 98+" },
+      ],
+      tech: ["React.js", "Tailwind CSS", "GSAP"],
       live: "#",
+      url: "lokpriyatam.com",
       github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
       accent: "#06b6d4",
+      gridClass: "md:col-span-6",
+      isFlagship: false,
     },
   ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = sectionRef.current.querySelectorAll(".project-card");
+      const cards = sectionRef.current.querySelectorAll(".bento-card");
       cards.forEach((card, i) => {
         gsap.from(card, {
           scrollTrigger: { trigger: card, start: "top 88%" },
-          y: 60,
+          y: 50,
           opacity: 0,
           duration: 0.7,
           delay: (i % 2) * 0.1,
@@ -77,8 +173,6 @@ const Projects = () => {
     return () => ctx.revert();
   }, []);
 
-  const isLight = theme === "light";
-
   return (
     <section
       id="projects"
@@ -87,11 +181,12 @@ const Projects = () => {
     >
       <div className="max-w-7xl mx-auto">
 
-        {/* Heading */}
+        {/* Section Header */}
         <div className="text-center mb-16">
-          <h4 className="text-blue-400 tracking-widest text-xs mb-4 uppercase font-mono font-semibold">
-            Portfolio
-          </h4>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono mb-4 uppercase tracking-widest">
+            <i className="ri-layout-grid-line" />
+            Style Showcase 1 — Refined Bento Grid + Browser Chrome + 3D Tilt
+          </div>
           <h1
             className="text-4xl md:text-6xl font-black text-white"
             style={{ fontFamily: "'Georgia', serif" }}
@@ -103,117 +198,88 @@ const Projects = () => {
           </p>
         </div>
 
-        {/* 1. TIER ONE: Featured Ecosystems & Flagship Platforms (2 Large Cards) */}
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-6 text-xs font-mono text-gray-400 uppercase tracking-widest">
-            <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-            Lead Platforms & Ecosystems
-          </div>
+        {/* Bento Grid Layout (Mixed-size tiles: 8-span hero flagship + 4-span vertical + two 6-span tiles) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+          {projects.map((project, i) => (
+            <TiltBentoCard
+              key={project.slug}
+              className={`bento-card group rounded-3xl overflow-hidden relative flex flex-col transition-all duration-300 cursor-default ${project.gridClass}`}
+              style={{
+                border: isLight ? `1px solid rgba(0,0,0,0.08)` : `1px solid ${project.accent}30`,
+                background: isLight
+                  ? "#ffffff"
+                  : `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}06 100%)`,
+                boxShadow: isLight
+                  ? "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 6px -1px rgba(0,0,0,0.02)"
+                  : `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`,
+              }}
+            >
+              {/* Browser Chrome Header */}
+              <BrowserChromeFrame url={project.url} isLive={project.badgeType === "live"} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProjects.map((project, i) => (
-              <div
-                key={i}
-                className="project-card group rounded-3xl overflow-hidden relative flex flex-col transition-all duration-500 cursor-default p-7 md:p-8"
-                style={{
-                  border: isLight ? `1px solid rgba(0,0,0,0.08)` : `1px solid ${project.accent}30`,
-                  background: isLight
-                    ? "#ffffff"
-                    : `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`,
-                  boxShadow: isLight
-                    ? "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 6px -1px rgba(0,0,0,0.02)"
-                    : `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.border = isLight
-                    ? `1px solid ${project.accent}`
-                    : `1px solid ${project.accent}70`;
-                  e.currentTarget.style.background = isLight
-                    ? "#ffffff"
-                    : `linear-gradient(145deg, ${project.accent}12 0%, rgba(255,255,255,0.05) 100%)`;
-                  e.currentTarget.style.boxShadow = isLight
-                    ? `0 12px 35px ${project.accent}20, 0 4px 15px rgba(0,0,0,0.05)`
-                    : `0 0 50px ${project.accent}25, 0 20px 60px rgba(0,0,0,0.5)`;
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.border = isLight
-                    ? `1px solid rgba(0,0,0,0.08)`
-                    : `1px solid ${project.accent}30`;
-                  e.currentTarget.style.background = isLight
-                    ? "#ffffff"
-                    : `linear-gradient(145deg, rgba(255,255,255,0.04) 0%, ${project.accent}08 100%)`;
-                  e.currentTarget.style.boxShadow = isLight
-                    ? "0 4px 20px -2px rgba(0,0,0,0.05), 0 2px 6px -1px rgba(0,0,0,0.02)"
-                    : `0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`;
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                {/* Top accent gradient bar */}
+              {/* Card Body */}
+              <div className="p-6 md:p-8 flex flex-col justify-between flex-1 relative">
+
+                {/* Top Accent line under browser chrome */}
                 <div
-                  className="absolute top-0 left-0 right-0 h-[3px]"
+                  className="absolute top-0 left-0 right-0 h-[2px]"
                   style={{ background: `linear-gradient(to right, ${project.accent}, transparent)` }}
                 />
 
-                {/* Number badge */}
-                <div className="absolute top-6 right-6">
-                  <span
-                    className="text-xs font-mono font-bold opacity-40"
-                    style={{ color: project.accent }}
-                  >
-                    0{i + 1}
-                  </span>
-                </div>
-
-                {/* Card Header */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-3 mb-2 flex-wrap">
-                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+                <div>
+                  {/* Title & Badge */}
+                  <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide flex items-center gap-2">
                       {project.title}
+                      {project.isFlagship && (
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                          Flagship
+                        </span>
+                      )}
                     </h2>
-
-                    {/* Status Badge */}
-                    {project.badgeType === "live" && (
-                      <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 animate-pulse">
-                        Live
-                      </span>
-                    )}
-                    {project.badgeType === "progress" && (
-                      <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse">
-                        In Progress
-                      </span>
-                    )}
+                    <span className="text-xs font-mono font-bold opacity-40" style={{ color: project.accent }}>
+                      0{i + 1}
+                    </span>
                   </div>
 
-                  <p className="text-xs font-mono text-purple-400 uppercase tracking-wide">
+                  <p className="text-xs font-mono text-purple-400 uppercase tracking-wide mb-3">
                     {project.subtitle}
                   </p>
-                </div>
 
-                {/* Description */}
-                <p className="text-gray-300 text-sm mb-6 leading-relaxed flex-1">
-                  {project.desc}
-                </p>
+                  <p className="text-gray-300 text-xs md:text-sm leading-relaxed mb-6">
+                    {project.desc}
+                  </p>
 
-                {/* Tech tags */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.map((t, idx) => (
-                    <span
-                      key={idx}
-                      className="px-2.5 py-1 text-xs rounded-full font-mono font-medium"
-                      style={{
-                        background: isLight ? `${project.accent}12` : `${project.accent}18`,
-                        color: project.accent,
-                        border: `1px solid ${project.accent}35`,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
+                  {/* Metrics Pills Section */}
+                  <div className="grid grid-cols-3 gap-2 mb-6 p-3 rounded-2xl bg-black/20 dark:bg-black/30 border border-white/5">
+                    {project.metrics.map((m, idx) => (
+                      <div key={idx} className="text-center">
+                        <p className="text-xs md:text-sm font-bold text-white font-mono">{m.val}</p>
+                        <p className="text-[10px] text-gray-400 font-mono uppercase tracking-tight">{m.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tech Tags */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((t, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2.5 py-1 text-xs rounded-full font-mono font-medium"
+                        style={{
+                          background: isLight ? `${project.accent}12` : `${project.accent}18`,
+                          color: project.accent,
+                          border: `1px solid ${project.accent}35`,
+                        }}
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Buttons */}
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex gap-3 flex-wrap pt-2">
                   <a
                     href={project.live}
                     target="_blank"
@@ -255,125 +321,8 @@ const Projects = () => {
                 </div>
 
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* 2. TIER TWO: Secondary Projects (2 Compact Cards) */}
-        <div>
-          <div className="flex items-center gap-2 mb-6 text-xs font-mono text-gray-400 uppercase tracking-widest">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            Specialized Applications & Storefronts
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {secondaryProjects.map((project, i) => (
-              <div
-                key={i}
-                className="project-card group rounded-2xl overflow-hidden relative flex flex-col transition-all duration-400 cursor-default p-6"
-                style={{
-                  border: isLight ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.07)",
-                  background: isLight ? "#ffffff" : "rgba(255,255,255,0.03)",
-                  boxShadow: isLight ? "0 2px 10px rgba(0,0,0,0.04)" : "none",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.border = isLight ? `1px solid ${project.accent}` : `1px solid ${project.accent}50`;
-                  e.currentTarget.style.background = isLight ? "#ffffff" : `${project.accent}08`;
-                  e.currentTarget.style.boxShadow = isLight ? `0 10px 30px ${project.accent}18` : `0 0 35px ${project.accent}20, 0 15px 45px rgba(0,0,0,0.3)`;
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.border = isLight ? "1px solid rgba(0,0,0,0.08)" : "1px solid rgba(255,255,255,0.07)";
-                  e.currentTarget.style.background = isLight ? "#ffffff" : "rgba(255,255,255,0.03)";
-                  e.currentTarget.style.boxShadow = isLight ? "0 2px 10px rgba(0,0,0,0.04)" : "none";
-                  e.currentTarget.style.transform = "translateY(0)";
-                }}
-              >
-                {/* Top accent */}
-                <div
-                  className="h-[3px] w-full absolute top-0 left-0 right-0"
-                  style={{ background: `linear-gradient(to right, ${project.accent}, transparent)` }}
-                />
-
-                {/* Number badge */}
-                <div className="absolute top-4 right-4">
-                  <span
-                    className="text-xs font-mono opacity-30"
-                    style={{ color: project.accent }}
-                  >
-                    0{i + 3}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <div className="flex flex-col flex-1">
-                  <h2 className="text-lg font-bold mb-2 text-white">{project.title}</h2>
-                  <p className="text-gray-400 text-xs mb-4 leading-relaxed flex-1">{project.desc}</p>
-
-                  {/* Tech tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-5">
-                    {project.tech.map((t, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 text-[11px] rounded-full font-mono"
-                        style={{
-                          background: isLight ? `${project.accent}12` : `${project.accent}15`,
-                          color: project.accent,
-                          border: `1px solid ${project.accent}30`,
-                        }}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Buttons */}
-                  <div className="flex gap-2.5 flex-wrap">
-                    {project.live !== "#" && (
-                      <a
-                        href={project.live}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex-1 text-center px-3 py-2 rounded-full text-xs font-medium transition-opacity hover:opacity-90 shadow-md"
-                        style={{
-                          background: `linear-gradient(to right, ${project.accent}, ${project.accent}bb)`,
-                          color: "#fff",
-                        }}
-                      >
-                        Live Demo
-                      </a>
-                    )}
-                    <Link
-                      to={`/projects/${project.slug}`}
-                      className="flex-1 text-center px-3 py-2 rounded-full text-xs font-medium border hover:bg-white/10 transition"
-                      style={{
-                        borderColor: isLight ? `#cbd5e1` : `${project.accent}50`,
-                        color: isLight ? `#334155` : project.accent,
-                        background: isLight ? `#ffffff` : `transparent`,
-                      }}
-                    >
-                      Case Study
-                    </Link>
-                    {project.github !== "#" && (
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-3 py-2 rounded-full text-xs border hover:bg-white/10 transition"
-                        style={{
-                          borderColor: isLight ? `#cbd5e1` : "rgba(255,255,255,0.15)",
-                          color: isLight ? `#334155` : "#ffffff",
-                          background: isLight ? `#ffffff` : `transparent`,
-                        }}
-                      >
-                        <i className="ri-github-line" />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+            </TiltBentoCard>
+          ))}
         </div>
 
       </div>
