@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import Home from "./Home";
+import AboutPage from "./Pages/AboutPage";
 import CaseStudy from "./Pages/CaseStudy";
 import ResumePage from "./Pages/ResumePage";
 import BlogPage from "./Pages/BlogPage";
@@ -19,6 +20,7 @@ const App = () => {
           <div className="w-full min-h-screen bg-[#0b0f1a] text-white">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/projects/:slug" element={<CaseStudy />} />
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/blog" element={<BlogPage />} />

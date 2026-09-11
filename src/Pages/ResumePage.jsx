@@ -143,9 +143,19 @@ const ResumePage = () => {
             <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-purple-400 mb-3 border-b border-white/5 pb-1">
               Certifications & Accomplishments
             </h2>
-            <ul className="list-disc list-inside text-xs text-gray-300 flex flex-col gap-1.5">
-              <li>MERN Fullstack Web Development Certificate of Excellence — Sheryians Coding School</li>
-              <li>Basics of Python — Infosys Springboard</li>
+            <ul className="list-disc list-inside text-xs text-gray-300 flex flex-col gap-2.5">
+              <li className="leading-relaxed">
+                <strong className="text-white">MERN Fullstack Web Development Certificate of Excellence</strong> — Sheryians Coding School
+                <a
+                  href="https://sheryians.com/certificate/7c47dda4-81f3-46ef-b514-c7bc58356e91"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:text-purple-300 text-[11px] font-mono ml-2 transition hover:bg-purple-500/20"
+                >
+                  <i className="ri-verified-badge-line text-emerald-400" /> Verify Live Certificate ↗
+                </a>
+              </li>
+              <li><strong className="text-white">Basics of Python</strong> — Infosys Springboard</li>
             </ul>
           </section>
 

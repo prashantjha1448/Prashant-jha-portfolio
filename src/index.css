@@ -108,7 +108,8 @@ html.light .project-card:hover {
 }
 
 /* 4. Typography High Contrast Overrides */
-html.light .text-white {
+html.light .text-white,
+html.light .dark\:text-white {
   color: #0f172a !important;
 }
 
