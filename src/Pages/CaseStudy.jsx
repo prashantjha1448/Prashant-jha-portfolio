@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CASE_STUDY_DATA } from "../data/caseStudies";
 
@@ -12,14 +12,25 @@ const CaseStudy = () => {
     window.scrollTo(0, 0);
   }, [slug]);
 
+  const handleBackToProjects = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("projects");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   if (!project) {
     return (
       <div className="min-h-screen bg-[#0b0f1a] text-white flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-bold mb-3 font-serif">Case Study Not Found</h2>
         <p className="text-xs text-gray-400 mb-6">The requested case study route doesn't exist.</p>
-        <Link to="/" className="px-6 py-2.5 rounded-full bg-purple-600 text-xs font-semibold text-white shadow-lg">
-          Back to Portfolio
-        </Link>
+        <button
+          onClick={handleBackToProjects}
+          className="px-6 py-2.5 rounded-full bg-purple-600 text-xs font-semibold text-white shadow-lg cursor-pointer"
+        >
+          ← Back to Projects
+        </button>
       </div>
     );
   }
@@ -36,10 +47,10 @@ const CaseStudy = () => {
         
         {/* Navigation Breadcrumb */}
         <button
-          onClick={() => navigate("/")}
+          onClick={handleBackToProjects}
           className="inline-flex items-center gap-2 text-xs font-mono text-gray-400 hover:text-white transition mb-10 cursor-pointer"
         >
-          <i className="ri-arrow-left-line" /> Back to Portfolio
+          <i className="ri-arrow-left-line" /> Back to Projects
         </button>
 
         {/* 1. HERO SECTION */}
@@ -65,19 +76,18 @@ const CaseStudy = () => {
           </div>
 
           <h1
-            className="text-4xl md:text-5xl font-black text-white mb-3 leading-tight"
+            className="text-4xl md:text-6xl font-black mb-4 text-white"
             style={{ fontFamily: "'Georgia', serif" }}
           >
             {project.title}
           </h1>
 
-          <p className="text-gray-300 text-sm md:text-base font-mono mb-8">
-            {project.subtitle}
+          <p className="text-lg md:text-xl text-purple-300 font-mono mb-6">
+            {project.tagline}
           </p>
 
-          {/* Tech Tags */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {project.techTags.map((t, idx) => (
+            {project.tech.map((t, idx) => (
               <span
                 key={idx}
                 className="px-3 py-1 text-xs rounded-full font-mono bg-white/5 border border-white/10 text-gray-300"
@@ -87,156 +97,147 @@ const CaseStudy = () => {
             ))}
           </div>
 
-          {/* 10. LINKS: Live & Code */}
           <div className="flex gap-4 flex-wrap">
             {project.liveUrl !== "#" && (
               <a
                 href={project.liveUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-3 rounded-full text-xs font-semibold text-white shadow-lg transition-all hover:opacity-90 cursor-pointer"
+                className="px-6 py-3 rounded-full text-xs font-semibold text-white shadow-lg transition-transform hover:-translate-y-0.5"
                 style={{ background: `linear-gradient(to right, ${project.accent}, ${project.accent}bb)` }}
               >
                 Launch Live Demo →
               </a>
             )}
-            {project.githubUrl !== "#" && (
+            {project.repoUrl !== "#" && (
               <a
-                href={project.githubUrl}
+                href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-3 rounded-full text-xs font-semibold border border-white/20 hover:bg-white/10 transition cursor-pointer"
+                className="px-6 py-3 rounded-full text-xs font-semibold border border-white/20 hover:bg-white/10 transition"
               >
-                <i className="ri-github-line mr-1.5" /> Source Repository
+                View Repository
               </a>
             )}
           </div>
         </motion.div>
 
-        {/* 10-SECTION DETAILED CONTENT */}
-        <div className="flex flex-col gap-10 text-gray-300 text-sm leading-relaxed">
+        {/* 10-SECTION DETAILED CASE STUDY BODY */}
+        <div className="flex flex-col gap-12 text-gray-300 text-sm md:text-base leading-relaxed">
           
-          {/* 2. OVERVIEW */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-3 font-serif flex items-center gap-2">
+          {/* Section 1: Overview */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-400" />
               1. Project Overview
-            </h2>
-            <p className="text-gray-300 leading-relaxed">{project.overview}</p>
+            </h3>
+            <p>{project.overview}</p>
           </section>
 
-          {/* 3. THE PROBLEM */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-3 font-serif flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+          {/* Section 2: Problem & Gap */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-400" />
               2. The Problem & Gap Solved
-            </h2>
-            <p className="text-gray-300 leading-relaxed">{project.problem}</p>
+            </h3>
+            <p>{project.problem}</p>
           </section>
 
-          {/* 4. CHALLENGES FACED */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-4 font-serif flex items-center gap-2">
+          {/* Section 3: Tech Rationale */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+              3. Tech Stack Rationale
+            </h3>
+            <p>{project.techRationale}</p>
+          </section>
+
+          {/* Section 4: Architecture */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+              4. System Architecture
+            </h3>
+            <p>{project.architecture}</p>
+          </section>
+
+          {/* Section 5: Key Features */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2 font-serif">
               <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-              3. Engineering Challenges Faced
-            </h2>
-            <ul className="flex flex-col gap-3">
-              {project.challenges.map((c, idx) => (
-                <li key={idx} className="flex items-start gap-3 text-xs md:text-sm text-gray-300">
-                  <span className="text-amber-400 font-bold mt-0.5">•</span>
-                  <span>{c}</span>
+              5. Key Features & Workflows
+            </h3>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {project.keyFeatures.map((feat, idx) => (
+                <li key={idx} className="p-3 rounded-2xl bg-white/5 border border-white/5 text-xs md:text-sm text-gray-200 flex items-center gap-2">
+                  <span className="text-purple-400 font-bold">•</span> {feat}
                 </li>
               ))}
             </ul>
           </section>
 
-          {/* 5. TECH STACK RATIONALE (Why Chosen & What Problem Solved) */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-4 font-serif flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-400" />
-              4. Tech Stack Rationale
-            </h2>
-            <p className="text-xs text-gray-400 mb-6 font-mono">
-              Why each technology was selected and the specific architectural problem it solved:
-            </p>
+          {/* Section 6: Challenges & Solutions */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+              6. Engineering Challenges & Solutions
+            </h3>
             <div className="flex flex-col gap-4">
-              {project.techRationale.map((t, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-black/40 border border-white/5 text-xs">
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <h3 className="font-bold text-white font-mono text-sm">{t.name}</h3>
-                  </div>
-                  <p className="text-gray-300 mb-1">
-                    <strong className="text-purple-300 font-mono">Why Chosen:</strong> {t.whyChosen}
-                  </p>
-                  <p className="text-gray-400">
-                    <strong className="text-emerald-400 font-mono">Problem Solved:</strong> {t.problemSolved}
-                  </p>
+              {project.challenges.map((c, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5">
+                  <h4 className="text-xs font-mono font-bold text-rose-300 uppercase tracking-wider mb-1">
+                    Challenge: {c.title}
+                  </h4>
+                  <p className="text-xs md:text-sm text-gray-300">{c.solution}</p>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* 6. ARCHITECTURE / HOW IT WORKS */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-3 font-serif flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-              5. System Architecture & User Roles
-            </h2>
-            <p className="text-gray-300 leading-relaxed mb-5">{project.architecture.summary}</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-2xl bg-black/40 border border-white/5">
-                <h4 className="font-mono font-bold text-purple-300 uppercase tracking-wider mb-2">User Roles & Actors</h4>
-                <ul className="flex flex-col gap-1 text-gray-300">
-                  {project.architecture.userRoles.map((r, i) => (
-                    <li key={i}>• {r}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="p-4 rounded-2xl bg-black/40 border border-white/5">
-                <h4 className="font-mono font-bold text-blue-300 uppercase tracking-wider mb-2">Frontend & Backend Split</h4>
-                <p className="text-gray-300 leading-relaxed">{project.architecture.frontendBackendSplit}</p>
-              </div>
-            </div>
-          </section>
-
-          {/* 7. UI/UX HIGHLIGHTS & SCREENSHOT MOCKUPS */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-3 font-serif flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-              6. UI/UX & Key Screen Mockups
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              {project.screens.map((screen, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-black/40 border border-white/10 flex flex-col gap-2">
-                  <div className="w-full h-32 rounded-xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-white/10 flex items-center justify-center text-purple-300 font-mono text-xs">
-                    <i className="ri-layout-grid-line text-2xl mr-2" /> [Product UI Screen]
-                  </div>
-                  <h4 className="font-bold text-white text-xs font-mono mt-1">{screen.name}</h4>
-                  <p className="text-[11px] text-gray-400 leading-relaxed">{screen.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* 8. DEVELOPMENT TIMELINE */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-2 font-serif flex items-center gap-2">
+          {/* Section 7: Performance & Security */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
               <span className="w-2.5 h-2.5 rounded-full bg-indigo-400" />
-              7. Development Timeline & Duration
-            </h2>
-            <p className="text-xs text-gray-300 font-mono">{project.timelineDuration}</p>
+              7. Performance & Security Measures
+            </h3>
+            <p>{project.performanceAndSecurity}</p>
           </section>
 
-          {/* 9. ROADMAP (Shipped vs Planned Next) */}
-          <section className="backdrop-blur-xl bg-white/[0.02] border border-white/10 rounded-3xl p-6 md:p-8">
-            <h2 className="text-lg font-bold text-white mb-4 font-serif flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-pink-400" />
-              8. Roadmap: Shipped vs Planned Next
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          {/* Section 8: Metrics & Impact */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+              8. Metrics & Impact
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {project.metrics.map((m, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-white/5 border border-white/5 text-center">
+                  <p className="text-xl md:text-2xl font-bold text-purple-300 font-mono mb-1">{m.val}</p>
+                  <p className="text-xs text-gray-400 font-mono uppercase tracking-wider">{m.label}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Section 9: Key Learnings */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-3 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+              9. Lessons Learned
+            </h3>
+            <p>{project.learnings}</p>
+          </section>
+
+          {/* Section 10: Future Roadmap */}
+          <section className="p-6 md:p-8 rounded-3xl bg-white/[0.03] border border-white/10">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2 font-serif">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+              10. Future Roadmap
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
               <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
-                <h4 className="font-mono font-bold text-emerald-400 uppercase tracking-wider mb-2.5">✓ Currently Shipped</h4>
+                <h4 className="font-mono font-bold text-emerald-300 uppercase tracking-wider mb-2.5">✓ Shipped Features</h4>
                 <ul className="flex flex-col gap-1.5 text-gray-300">
                   {project.roadmap.shipped.map((s, i) => (
                     <li key={i} className="flex items-center gap-2">
@@ -258,6 +259,16 @@ const CaseStudy = () => {
               </div>
             </div>
           </section>
+
+          {/* Bottom Back Button */}
+          <div className="pt-6 text-center">
+            <button
+              onClick={handleBackToProjects}
+              className="px-8 py-3 rounded-full bg-white/10 border border-white/20 text-xs font-semibold text-white hover:bg-white/20 transition cursor-pointer shadow-lg inline-flex items-center gap-2"
+            >
+              <i className="ri-arrow-left-line" /> Back to Projects Section
+            </button>
+          </div>
 
         </div>
 
