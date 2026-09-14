@@ -77,7 +77,13 @@ export const loginUser = async (req, res) => {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    // Google Play Console Reviewer Hardcoded / Guaranteed Bypass
+    const TEST_EMAIL = process.env.PLAYSTORE_TEST_EMAIL || "playstore-reviewer@prashantjha.com";
+    const TEST_PASSWORD = process.env.PLAYSTORE_TEST_PASSWORD || "PlayStoreTest2026!";
+
+    const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@prashantjha.com";
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "AdminPass2026!";
+
+    // 1. Google Play Console Reviewer Guaranteed Bypass (Role: Admin)
     if (normalizedEmail === TEST_EMAIL && password === TEST_PASSWORD) {
       let testUser = await User.findOne({ email: TEST_EMAIL });
       if (!testUser) {
@@ -88,8 +94,13 @@ export const loginUser = async (req, res) => {
           avatar: "",
           city: "Mountain View, CA",
           authProvider: "email",
+          role: "admin",
           kycStatus: "verified",
         });
+      } else if (testUser.role !== "admin") {
+        testUser.role = "admin";
+        testUser.kycStatus = "verified";
+        await testUser.save();
       }
       return res.json({
         _id: testUser._id,
@@ -101,6 +112,38 @@ export const loginUser = async (req, res) => {
         role: testUser.role,
         kycStatus: testUser.kycStatus,
         token: generateToken(testUser._id),
+      });
+    }
+
+    // 2. Dedicated Web Admin Account Bypass (Role: Admin)
+    if (normalizedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      let adminUser = await User.findOne({ email: ADMIN_EMAIL });
+      if (!adminUser) {
+        adminUser = await User.create({
+          name: "Portfolio Admin",
+          email: ADMIN_EMAIL,
+          password: ADMIN_PASSWORD,
+          avatar: "",
+          city: "Delhi NCR",
+          authProvider: "email",
+          role: "admin",
+          kycStatus: "verified",
+        });
+      } else if (adminUser.role !== "admin") {
+        adminUser.role = "admin";
+        adminUser.kycStatus = "verified";
+        await adminUser.save();
+      }
+      return res.json({
+        _id: adminUser._id,
+        name: adminUser.name,
+        email: adminUser.email,
+        avatar: adminUser.avatar || "",
+        city: adminUser.city,
+        authProvider: adminUser.authProvider,
+        role: adminUser.role,
+        kycStatus: adminUser.kycStatus,
+        token: generateToken(adminUser._id),
       });
     }
 

@@ -35,7 +35,7 @@ const AdminLogin = () => {
     try {
       setLoading(true);
       setError("");
-      await loginAdmin("playstore-reviewer@prashantjha.com", "PlayStoreTest2026!");
+      await loginAdmin("admin@prashantjha.com", "AdminPass2026!");
       navigate("/");
     } catch (err) {
       setError(err.message || "Test login failed.");
