@@ -138,7 +138,23 @@ const Projects = () => {
       .getProjects()
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
-          setProjects(data);
+          const normalized = data.map((item) => ({
+            ...item,
+            accent: item.accent || "#3b82f6",
+            date: item.date || item.timelineLabel || "2026",
+            phase: item.phase || item.category || "Full-Stack",
+            desc: item.desc || item.description || "",
+            metrics: (item.metrics || []).map((m) => ({
+              label: m.label,
+              val: m.val || m.value,
+            })),
+            tech: item.tech || item.techStack || [],
+            live: item.live || item.liveUrl || "#",
+            url: item.url || (item.liveUrl ? item.liveUrl.replace(/^https?:\/\//, "") : item.slug + ".vercel.app"),
+            github: item.github || item.githubUrl || "#",
+            badgeType: item.badgeType || item.status || "live",
+          }));
+          setProjects(normalized);
         }
       })
       .catch(() => {});
@@ -201,19 +217,27 @@ const Projects = () => {
           <div className="space-y-16">
             {projects.map((project, idx) => {
               const isEven = idx % 2 === 0;
+              const accent = project.accent || "#3b82f6";
+              const date = project.date || project.timelineLabel || "";
+              const phase = project.phase || project.category || "";
+              const live = project.live || project.liveUrl || "#";
+              const github = project.github || project.githubUrl || "#";
+              const url = project.url || (project.liveUrl ? project.liveUrl.replace(/^https?:\/\//, "") : project.slug + ".vercel.app");
+              const desc = project.desc || project.description || "";
+              const badgeType = project.badgeType || project.status || "live";
 
               return (
                 <div
-                  key={project.slug}
+                  key={project.slug || idx}
                   className="timeline-item relative flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12"
                 >
                   
                   {/* Timeline Node Circle */}
                   <div className="absolute left-[-17px] md:left-1/2 top-8 md:-translate-x-1/2 w-8 h-8 rounded-full flex items-center justify-center font-mono text-xs font-bold shadow-lg z-20"
                     style={{
-                      background: project.accent,
+                      background: accent,
                       color: "#fff",
-                      boxShadow: `0 0 20px ${project.accent}80`,
+                      boxShadow: `0 0 20px ${accent}80`,
                     }}
                   >
                     0{idx + 1}
@@ -224,19 +248,19 @@ const Projects = () => {
                     <div className="inline-flex items-center gap-2 mb-2">
                       <span className="text-xs font-mono px-3 py-1 rounded-full font-bold uppercase tracking-wider"
                         style={{
-                          background: `${project.accent}18`,
-                          color: project.accent,
-                          border: `1px solid ${project.accent}35`,
+                          background: `${accent}18`,
+                          color: accent,
+                          border: `1px solid ${accent}35`,
                         }}
                       >
-                        📅 {project.date}
+                        📅 {date}
                       </span>
                     </div>
 
                     <h3 className={`text-xs font-mono uppercase tracking-wider mb-1 ${
                       isLight ? "text-slate-500" : "text-gray-400"
                     }`}>
-                      {project.phase}
+                      {phase}
                     </h3>
                   </div>
 
@@ -251,18 +275,18 @@ const Projects = () => {
                       style={{
                         boxShadow: isLight
                           ? "0 10px 30px -5px rgba(0,0,0,0.06)"
-                          : `0 15px 35px -10px ${project.accent}20`,
+                          : `0 15px 35px -10px ${accent}20`,
                       }}
                     >
                       {/* Browser Chrome Header */}
-                      <BrowserChromeFrame url={project.url} isLive={project.badgeType === "live"} isLight={isLight} />
+                      <BrowserChromeFrame url={url} isLive={badgeType === "live"} isLight={isLight} />
 
                       {/* Card Content */}
                       <div className="p-6 relative">
                         {/* Top Accent line */}
                         <div
                           className="absolute top-0 left-0 right-0 h-[2px]"
-                          style={{ background: `linear-gradient(to right, ${project.accent}, transparent)` }}
+                          style={{ background: `linear-gradient(to right, ${accent}, transparent)` }}
                         />
 
                         {/* Title & Badge */}
@@ -292,35 +316,37 @@ const Projects = () => {
                         <p className={`text-xs md:text-sm leading-relaxed mb-5 ${
                           isLight ? "text-slate-600" : "text-gray-300"
                         }`}>
-                          {project.desc}
+                          {desc}
                         </p>
 
                         {/* Key Metrics Pill Grid */}
-                        <div className={`grid grid-cols-3 gap-2 mb-5 p-3 rounded-2xl border ${
-                          isLight ? "bg-slate-50 border-slate-200" : "bg-black/30 border-white/5"
-                        }`}>
-                          {project.metrics.map((m, mIdx) => (
-                            <div key={mIdx} className="text-center">
-                              <p className={`text-xs md:text-sm font-bold font-mono ${
-                                isLight ? "text-slate-900" : "text-white"
-                              }`}>{m.val}</p>
-                              <p className={`text-[9px] md:text-[10px] font-mono uppercase tracking-tight ${
-                                isLight ? "text-slate-500" : "text-gray-400"
-                              }`}>{m.label}</p>
-                            </div>
-                          ))}
-                        </div>
+                        {Array.isArray(project.metrics) && project.metrics.length > 0 && (
+                          <div className={`grid grid-cols-3 gap-2 mb-5 p-3 rounded-2xl border ${
+                            isLight ? "bg-slate-50 border-slate-200" : "bg-black/30 border-white/5"
+                          }`}>
+                            {(project.metrics || []).map((m, mIdx) => (
+                              <div key={mIdx} className="text-center">
+                                <p className={`text-xs md:text-sm font-bold font-mono ${
+                                  isLight ? "text-slate-900" : "text-white"
+                                }`}>{m.val || m.value}</p>
+                                <p className={`text-[9px] md:text-[10px] font-mono uppercase tracking-tight ${
+                                  isLight ? "text-slate-500" : "text-gray-400"
+                                }`}>{m.label}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
 
                         {/* Tech Tags */}
                         <div className="flex flex-wrap gap-1.5 mb-5">
-                          {project.tech.map((t, tIdx) => (
+                          {(project.tech || project.techStack || []).map((t, tIdx) => (
                             <span
                               key={tIdx}
                               className="px-2.5 py-0.5 text-[11px] rounded-full font-mono font-medium"
                               style={{
-                                background: isLight ? `${project.accent}15` : `${project.accent}18`,
-                                color: project.accent,
-                                border: `1px solid ${project.accent}35`,
+                                background: isLight ? `${accent}15` : `${accent}18`,
+                                color: accent,
+                                border: `1px solid ${accent}35`,
                               }}
                             >
                               {t}
@@ -331,12 +357,12 @@ const Projects = () => {
                         {/* Action Buttons */}
                         <div className="flex gap-2 flex-wrap pt-1">
                           <a
-                            href={project.live}
+                            href={live}
                             target="_blank"
                             rel="noreferrer"
                             className="px-4 py-2 rounded-full text-xs font-semibold text-white shadow transition-all hover:opacity-90"
                             style={{
-                              background: `linear-gradient(to right, ${project.accent}, ${project.accent}bb)`,
+                              background: `linear-gradient(to right, ${accent}, ${accent}bb)`,
                             }}
                           >
                             Live Demo →
@@ -353,9 +379,9 @@ const Projects = () => {
                             Case Study
                           </Link>
 
-                          {project.github !== "#" && (
+                          {github !== "#" && (
                             <a
-                              href={project.github}
+                              href={github}
                               target="_blank"
                               rel="noreferrer"
                               className={`px-3 py-2 rounded-full text-xs border transition ${
