@@ -115,7 +115,7 @@ export const ReviewsScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Auth Status Bar */}
+        {/* v1.2 restoration: Auth Status Bar & Write Review Button
         <View style={[styles.authBanner, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
           {isLoggedIn ? (
             <View style={styles.authBannerRow}>
@@ -157,7 +157,6 @@ export const ReviewsScreen = ({ navigation }) => {
           )}
         </View>
 
-        {/* Write Review Button */}
         <TouchableOpacity
           onPress={handleOpenWriteReview}
           style={[styles.addBtn, { backgroundColor: colors.primary }]}
@@ -166,6 +165,7 @@ export const ReviewsScreen = ({ navigation }) => {
           <Plus size={16} color="#ffffff" style={{ marginRight: 6 }} />
           <Text style={styles.addBtnText}>Write a Review</Text>
         </TouchableOpacity>
+        */}
 
         {loading ? (
           <ActivityIndicator size="large" color={colors.primary} style={{ marginVertical: 40 }} />
@@ -210,7 +210,7 @@ export const ReviewsScreen = ({ navigation }) => {
         )}
       </ScrollView>
 
-      {/* Review Submission Modal */}
+      {/* v1.2 restoration: Review Submission Modal
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
@@ -219,7 +219,6 @@ export const ReviewsScreen = ({ navigation }) => {
               Posting as: <Text style={{ fontWeight: '700', color: colors.primary }}>{user?.name || user?.email}</Text>
             </Text>
 
-            {/* Rating selector */}
             <Text style={[styles.label, { color: colors.textSecondary }]}>Rating</Text>
             <View style={styles.starPicker}>
               {[1, 2, 3, 4, 5].map((s) => (
@@ -234,7 +233,6 @@ export const ReviewsScreen = ({ navigation }) => {
               ))}
             </View>
 
-            {/* Comment Input */}
             <Text style={[styles.label, { color: colors.textSecondary }]}>Comment / Feedback</Text>
             <TextInput
               style={[styles.input, { color: colors.text, borderColor: colors.cardBorder, backgroundColor: isLight ? '#f8fafc' : '#0b0f19' }]}
@@ -246,7 +244,6 @@ export const ReviewsScreen = ({ navigation }) => {
               onChangeText={setComment}
             />
 
-            {/* City */}
             <Text style={[styles.label, { color: colors.textSecondary }]}>City / Location</Text>
             <TextInput
               style={[styles.input, { color: colors.text, borderColor: colors.cardBorder, backgroundColor: isLight ? '#f8fafc' : '#0b0f19' }]}
@@ -256,7 +253,6 @@ export const ReviewsScreen = ({ navigation }) => {
               onChangeText={setCity}
             />
 
-            {/* Modal Actions */}
             <View style={styles.modalActions}>
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
@@ -280,6 +276,7 @@ export const ReviewsScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+      */}
     </View>
   );
 };
