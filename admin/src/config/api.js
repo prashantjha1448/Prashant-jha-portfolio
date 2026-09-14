@@ -14,9 +14,11 @@ const getAuthHeaders = () => {
 };
 
 const request = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const primaryUrl = `${API_BASE_URL}${endpoint}`;
+  const secondaryUrl = `${API_BASE_URL === LOCAL_API_URL ? LIVE_API_URL : LOCAL_API_URL}${endpoint}`;
+
   try {
-    const res = await fetch(url, {
+    const res = await fetch(primaryUrl, {
       ...options,
       headers: {
         ...getAuthHeaders(),
@@ -29,24 +31,24 @@ const request = async (endpoint, options = {}) => {
       throw new Error(data.message || "API request failed");
     }
     return data;
-  } catch (err) {
-    if (window.location.hostname === "localhost") {
-      try {
-        const fallbackRes = await fetch(`${LOCAL_API_URL}${endpoint}`, {
-          ...options,
-          headers: {
-            ...getAuthHeaders(),
-            ...options.headers,
-          },
-        });
-        const fallbackData = await fallbackRes.json();
-        if (!fallbackRes.ok) throw new Error(fallbackData.message || "Local fallback API error");
-        return fallbackData;
-      } catch (fallbackErr) {
-        throw err;
+  } catch (primaryErr) {
+    console.warn(`[Primary API Failed ${endpoint}]:`, primaryErr.message, "— trying secondary API endpoint...");
+    try {
+      const res = await fetch(secondaryUrl, {
+        ...options,
+        headers: {
+          ...getAuthHeaders(),
+          ...options.headers,
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Secondary API error");
       }
+      return data;
+    } catch (secondaryErr) {
+      throw primaryErr;
     }
-    throw err;
   }
 };
 

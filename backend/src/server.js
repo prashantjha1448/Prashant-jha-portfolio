@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
+import { seedDatabase } from "./config/seed.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -12,8 +13,6 @@ import educationRoutes from "./routes/educationRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
-import { connectDB } from "./config/db.js";
-import { seedDatabase } from "./config/seed.js";
 
 dotenv.config();
 
