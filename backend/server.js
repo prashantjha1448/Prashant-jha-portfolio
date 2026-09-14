@@ -63,7 +63,16 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message || "Internal Server Error" });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 5001;
+const server = app.listen(PORT, () => {
   console.log(`[Server] Portfolio backend running on port ${PORT}`);
+});
+
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.warn(`[Port Conflict]: Port ${PORT} is occupied (macOS AirPlay). Retrying on port 5002...`);
+    app.listen(5002, () => {
+      console.log(`[Server] Portfolio backend running on fallback port 5002`);
+    });
+  }
 });
