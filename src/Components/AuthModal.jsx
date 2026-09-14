@@ -13,6 +13,7 @@ const AuthModal = () => {
     city: "India",
   });
   const [geoStatus, setGeoStatus] = useState("idle"); // idle | requesting | success | denied
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -234,16 +235,26 @@ const AuthModal = () => {
 
             <div>
               <label className="text-[10px] uppercase font-mono tracking-widest text-gray-400">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                minLength={6}
-                className="w-full mt-1 px-4 py-2.5 rounded-xl bg-black/40 border border-white/10 text-xs outline-none focus:border-purple-500 transition-all text-white placeholder:text-gray-600"
-              />
+              <div className="relative mt-1">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                  className="w-full px-4 pr-10 py-2.5 rounded-xl bg-black/40 border border-white/10 text-xs outline-none focus:border-purple-500 transition-all text-white placeholder:text-gray-600"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition cursor-pointer text-sm"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  <i className={showPassword ? "ri-eye-off-line" : "ri-eye-line"} />
+                </button>
+              </div>
             </div>
 
             <button

@@ -9,6 +9,7 @@ const AdminLogin = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -31,17 +32,11 @@ const AdminLogin = () => {
     }
   };
 
-  const handleQuickTestLogin = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      await loginAdmin("admin@prashantjha.com", "AdminPass2026!");
-      navigate("/");
-    } catch (err) {
-      setError(err.message || "Test login failed.");
-    } finally {
-      setLoading(false);
-    }
+  const handleQuickTestLogin = () => {
+    setEmail("admin@prashantjha.com");
+    setPassword("AdminPass2026!");
+    setShowPassword(true);
+    setError("");
   };
 
   return (
@@ -90,12 +85,20 @@ const AdminLogin = () => {
             <div className="relative">
               <i className="ri-lock-line absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-base" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition"
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-11 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition cursor-pointer text-base p-1"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                <i className={showPassword ? "ri-eye-off-line" : "ri-eye-line"} />
+              </button>
             </div>
           </div>
 

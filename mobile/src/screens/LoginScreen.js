@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, Lock, Mail, User, MapPin, LogIn, UserPlus } from 'lucide-react-native';
+import { ArrowLeft, Lock, Mail, User, MapPin, LogIn, UserPlus, Eye, EyeOff } from 'lucide-react-native';
 
 export const LoginScreen = ({ navigation, route }) => {
   const { colors, isLight } = useTheme();
@@ -22,6 +22,7 @@ export const LoginScreen = ({ navigation, route }) => {
   const [mode, setMode] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
@@ -208,10 +209,17 @@ export const LoginScreen = ({ navigation, route }) => {
               style={[styles.input, { color: colors.text }]}
               placeholder="••••••••"
               placeholderTextColor={colors.textMuted}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               value={password}
               onChangeText={setPassword}
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={{ padding: 6 }}>
+              {showPassword ? (
+                <EyeOff size={18} color={colors.textMuted} />
+              ) : (
+                <Eye size={18} color={colors.textMuted} />
+              )}
+            </TouchableOpacity>
           </View>
 
           {/* Submit Button */}
