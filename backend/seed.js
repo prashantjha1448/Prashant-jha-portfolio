@@ -10,6 +10,7 @@ import Education from './src/models/Education.js';
 import WorkExperience from './src/models/WorkExperience.js';
 import SocialLink from './src/models/SocialLink.js';
 import TechStackItem from './src/models/TechStackItem.js';
+import Skill from './src/models/Skill.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -450,6 +451,57 @@ const seedData = async () => {
       });
     }
     console.log(`✔ ${techStackItemsData.length} Tech Stack Items seeded`);
+
+    // 8. Skills Data (matching frontend TechStack.jsx)
+    const skillsData = [
+      // Frontend
+      { name: "JavaScript", category: "frontend", icon: "devicon-javascript-plain colored", type: "Language", order: 1 },
+      { name: "HTML5", category: "frontend", icon: "devicon-html5-plain colored", type: "Markup", order: 2 },
+      { name: "CSS3", category: "frontend", icon: "devicon-css3-plain colored", type: "Styling", order: 3 },
+      { name: "React.js", category: "frontend", icon: "devicon-react-original colored", type: "Frontend", order: 4 },
+      { name: "Redux Toolkit", category: "frontend", icon: "devicon-redux-original colored", type: "Frontend", order: 5 },
+      { name: "Tailwind CSS", category: "frontend", icon: "devicon-tailwindcss-original colored", type: "Styling", order: 6 },
+      { name: "Framer Motion", category: "frontend", icon: "ri-play-circle-line text-purple-400", type: "Frontend", order: 7 },
+      { name: "Context API", category: "frontend", icon: "ri-bubble-chart-line text-blue-400", type: "State Mgmt", order: 8 },
+      { name: "React Router", category: "frontend", icon: "ri-route-line text-red-400", type: "Routing", order: 9 },
+
+      // Backend & APIs
+      { name: "Node.js", category: "backend", icon: "devicon-nodejs-plain colored", type: "Backend", order: 10 },
+      { name: "Express.js", category: "backend", icon: "devicon-express-original text-gray-400", type: "Backend", order: 11 },
+      { name: "REST API", category: "backend", icon: "ri-api-line text-emerald-400", type: "API", order: 12 },
+      { name: "Socket.io", category: "backend", icon: "devicon-socketio-original text-white", type: "Real-time", order: 13 },
+      { name: "Redis", category: "backend", icon: "devicon-redis-plain colored", type: "Backend", order: 14 },
+      { name: "BullMQ", category: "backend", icon: "ri-list-settings-line text-orange-500", type: "Queue", order: 15 },
+      { name: "Nodemailer", category: "backend", icon: "ri-mail-send-line text-blue-500", type: "Email", order: 16 },
+      { name: "JWT", category: "backend", icon: "ri-shield-keyhole-line text-purple-400", type: "Auth", order: 17 },
+      { name: "bcrypt", category: "backend", icon: "ri-lock-password-line text-yellow-500", type: "Security", order: 18 },
+      { name: "OAuth 2.0", category: "backend", icon: "devicon-oauth-plain colored", type: "Auth", order: 19 },
+      { name: "Passport.js", category: "backend", icon: "ri-passport-line text-sky-400", type: "Auth", order: 20 },
+
+      // Databases & ORMs
+      { name: "MongoDB", category: "database", icon: "devicon-mongodb-plain colored", type: "Database", order: 21 },
+      { name: "MongoDB Atlas", category: "database", icon: "devicon-mongodb-plain", type: "Cloud DB", order: 22 },
+      { name: "Mongoose", category: "database", icon: "ri-database-2-line text-rose-500", type: "ODM", order: 23 },
+      { name: "PostgreSQL", category: "database", icon: "devicon-postgresql-plain colored", type: "Database", order: 24 },
+
+      // Tools & DevOps
+      { name: "Cloudinary", category: "tools", icon: "ri-image-line text-cyan-400", type: "Media", order: 25 },
+      { name: "Git", category: "tools", icon: "devicon-git-plain colored", type: "Version Control", order: 26 },
+      { name: "GitHub", category: "tools", icon: "devicon-github-original text-white", type: "Repo", order: 27 },
+      { name: "Postman", category: "tools", icon: "devicon-postman-plain colored", type: "API Tool", order: 28 },
+      { name: "VS Code", category: "tools", icon: "devicon-vscode-plain colored", type: "Editor", order: 29 },
+      { name: "npm", category: "tools", icon: "devicon-npm-original-wordmark colored", type: "Package Mgmt", order: 30 },
+      { name: "Vite", category: "tools", icon: "devicon-vite-plain colored", type: "Build Tool", order: 31 },
+      { name: "Vercel", category: "tools", icon: "devicon-vercel-original text-white", type: "Deployment", order: 32 },
+      { name: "Render", category: "tools", icon: "ri-server-line text-indigo-400", type: "Deployment", order: 33 },
+      { name: "Google Cloud", category: "tools", icon: "devicon-googlecloud-plain colored", type: "Cloud Tools", order: 34 },
+    ];
+
+    await Skill.deleteMany({});
+    for (const skill of skillsData) {
+      await Skill.create(skill);
+    }
+    console.log(`✔ ${skillsData.length} Skills seeded into Skill collection`);
 
     console.log('\n==========================================');
     console.log('🎉 RESUME-ACCURATE SEEDING COMPLETED!');
