@@ -71,21 +71,11 @@ export const ReviewsScreen = ({ navigation }) => {
 
   const handleOpenWriteReview = () => {
     if (!isLoggedIn) {
-      Alert.alert(
-        'Login Required 🔒',
-        'Review post karne ke liye pehle login karna zaroori hai.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Login / Register',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]
-      );
-    } else {
-      if (user?.city) setCity(user.city);
-      setModalVisible(true);
+      navigation.navigate('Login');
+      return;
     }
+    if (user?.city) setCity(user.city);
+    setModalVisible(true);
   };
 
   const handleSubmitReview = async () => {
