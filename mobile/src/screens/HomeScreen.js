@@ -9,9 +9,11 @@ import {
   Linking,
   ActivityIndicator,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
-import { statusAPI } from '../config/api';
+import { statusAPI, portfolioAPI } from '../config/api';
+import { cacheService } from '../services/cacheService';
 import { Code2, Sparkles, ExternalLink, ArrowRight, ShieldCheck, Github, Linkedin, Mail } from 'lucide-react-native';
 
 export const HomeScreen = ({ navigation }) => {
@@ -46,25 +48,44 @@ export const HomeScreen = ({ navigation }) => {
     return () => clearTimeout(timer);
   }, [typedText, isDeleting, phraseIdx]);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadData = async () => {
+    await cacheService.fetchWithCache(
+      'home_status',
+      statusAPI.getStatus,
+      (data) => setStatus(data)
+    );
+    setLoadingStatus(false);
+  };
+
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const data = await statusAPI.getStatus();
-        setStatus(data);
-      } catch (e) {
-        console.warn("Status fetch failed:", e.message);
-      } finally {
-        setLoadingStatus(false);
-      }
-    };
-    fetchStatus();
+    loadData();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const freshData = await statusAPI.getStatus();
+      if (freshData) {
+        setStatus(freshData);
+        await cacheService.set('home_status', freshData);
+      }
+    } catch (e) {
+      console.warn('HomeScreen refresh failed:', e.message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.bg }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]} tintColor={colors.primary} />
+      }
     >
       {/* Hero Header with Portrait Image */}
       <View style={styles.heroHeaderRow}>

@@ -5,7 +5,7 @@ import User from "../models/User.js";
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || "portfolio_jwt_secret_key_123", {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
 };

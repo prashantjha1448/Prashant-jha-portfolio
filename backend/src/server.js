@@ -13,8 +13,15 @@ import educationRoutes from "./routes/educationRoutes.js";
 import skillRoutes from "./routes/skillRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
 
 dotenv.config();
+
+if (!process.env.JWT_SECRET) {
+  console.error("[FATAL ERROR]: JWT_SECRET is not defined in environment variables.");
+  process.exit(1);
+}
 
 // Connect to MongoDB Database & Auto-seed initial portfolio data if empty
 connectDB().then(() => {
@@ -28,7 +35,9 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
+  "http://localhost:5001",
   "https://prashant-jha-portfolio.vercel.app",
+  "https://prashant-jha-portfolio.onrender.com",
 ];
 
 app.use(
@@ -37,7 +46,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
         callback(null, true);
       } else {
-        callback(null, true);
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -66,6 +75,8 @@ app.use("/api/education", educationRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/resume", resumeRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/portfolio", portfolioRoutes);
 
 // 404 Route Handler
 app.use((req, res) => {

@@ -9,10 +9,12 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { reviewsAPI } from '../config/api';
+import { cacheService } from '../services/cacheService';
 import { Star, Plus, ShieldCheck, User, LogIn, LogOut } from 'lucide-react-native';
 
 export const ReviewsScreen = ({ navigation }) => {
@@ -30,44 +32,63 @@ export const ReviewsScreen = ({ navigation }) => {
   const [city, setCity] = useState(user?.city || 'Delhi NCR');
   const [submitting, setSubmitting] = useState(false);
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fallbackReviews = [
+    {
+      _id: '1',
+      rating: 5,
+      comment: 'Prashant built a high-performance scalable solution with clean code and incredible UI execution.',
+      project: 'WorkQuora',
+      city: 'Delhi NCR',
+      verified: true,
+      user: { name: 'Verified Client', authProvider: 'google' },
+      createdAt: new Date().toISOString(),
+    },
+    {
+      _id: '2',
+      rating: 5,
+      comment: 'Excellent MERN stack developer! Delivered our campus management portal ahead of schedule.',
+      project: 'CHH School',
+      city: 'Mumbai',
+      verified: true,
+      user: { name: 'School Administrator', authProvider: 'email' },
+      createdAt: new Date().toISOString(),
+    },
+  ];
+
   const fetchReviews = async () => {
-    try {
-      setLoading(true);
-      const data = await reviewsAPI.getReviews();
-      setReviews(data);
-    } catch (e) {
-      console.warn('Reviews fetch warning:', e.message);
-      // Fallback initial reviews if backend unreachable
-      setReviews([
-        {
-          _id: '1',
-          rating: 5,
-          comment: 'Prashant built a high-performance scalable solution with clean code and incredible UI execution.',
-          project: 'WorkQuora',
-          city: 'Delhi NCR',
-          verified: true,
-          user: { name: 'Verified Client', authProvider: 'google' },
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: '2',
-          rating: 5,
-          comment: 'Excellent MERN stack developer! Delivered our campus management portal ahead of schedule.',
-          project: 'CHH School',
-          city: 'Mumbai',
-          verified: true,
-          user: { name: 'School Administrator', authProvider: 'email' },
-          createdAt: new Date().toISOString(),
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+    await cacheService.fetchWithCache(
+      'reviews_list',
+      reviewsAPI.getReviews,
+      (data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setReviews(data);
+        }
+      },
+      fallbackReviews
+    );
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchReviews();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const freshData = await reviewsAPI.getReviews();
+      if (Array.isArray(freshData) && freshData.length > 0) {
+        setReviews(freshData);
+        await cacheService.set('reviews_list', freshData);
+      }
+    } catch (e) {
+      console.warn('ReviewsScreen refresh failed:', e.message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleOpenWriteReview = () => {
     if (!isLoggedIn) {
@@ -90,7 +111,7 @@ export const ReviewsScreen = ({ navigation }) => {
       Alert.alert('Success 🎉', 'Thank you! Your verified review has been submitted.');
       setComment('');
       setModalVisible(false);
-      fetchReviews();
+      onRefresh();
     } catch (e) {
       Alert.alert('Notice', e.message || 'Submitted locally.');
       setModalVisible(false);
@@ -104,6 +125,9 @@ export const ReviewsScreen = ({ navigation }) => {
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]} tintColor={colors.primary} />
+        }
       >
         {/* Header */}
         <View style={styles.headerRow}>

@@ -10,9 +10,9 @@ const LIVE_API_URL =
 
 const getLocalFallbackURL = () => {
   if (Platform.OS === 'android') {
-    return "http://10.0.2.2:5000/api";
+    return "http://10.0.2.2:5001/api";
   }
-  return "http://localhost:5000/api";
+  return "http://localhost:5001/api";
 };
 
 export const API_BASE_URL = LIVE_API_URL;
@@ -117,7 +117,20 @@ export const experienceAPI = {
   getExperience: () => request('/experience'),
 };
 
+export const educationAPI = {
+  getEducation: () => request('/education'),
+};
+
 export const skillsAPI = {
   getSkills: () => request('/skills'),
 };
+
+export const profileAPI = {
+  getProfile: () => request('/profile'),
+};
+
+export const portfolioAPI = {
+  getAllData: () => request('/portfolio/all'),
+};
+
 

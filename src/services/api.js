@@ -1,6 +1,6 @@
 // Frontend API Service Client for Portfolio Backend
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
 
 // Helper for HTTP requests
 const request = async (endpoint, options = {}) => {
@@ -112,4 +112,15 @@ export const blogAPI = {
 export const resumeAPI = {
   getResume: () => request("/resume"),
 };
+
+// Profile API Methods
+export const profileAPI = {
+  getProfile: () => request("/profile"),
+};
+
+// Portfolio Bundle API Methods
+export const portfolioAPI = {
+  getAllData: () => request("/portfolio/all"),
+};
+
 

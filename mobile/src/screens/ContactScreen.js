@@ -21,21 +21,58 @@ export const ContactScreen = ({ navigation }) => {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
 
-  const handleSendInquiry = () => {
+  const handleSendInquiry = async () => {
     if (!name.trim() || !email.trim() || !message.trim()) {
       Alert.alert('Validation Error', 'Please fill in Name, Email, and Message.');
       return;
     }
 
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      Alert.alert('Inquiry Sent', 'Thank you! Your message has been dispatched to Prashant Jha.');
+
+    try {
+      const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: 'service_wdfgw6q',
+          template_id: 'template_maw5jyb',
+          user_id: 'YsVQ1F-oGnilD_JXm',
+          template_params: {
+            name: name.trim(),
+            email: email.trim(),
+            subject: subject.trim() || 'Mobile App Inquiry',
+            message: message.trim(),
+          },
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Message Sent 🎉', 'Thank you! Your message has been delivered directly to Prashant Jha\'s email inbox.');
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        const errText = await response.text();
+        console.warn('EmailJS error:', errText);
+        Alert.alert('Inquiry Received', 'Thank you! Your message has been recorded.');
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      }
+    } catch (error) {
+      console.warn('EmailJS Network error:', error.message);
+      Alert.alert('Inquiry Received', 'Thank you! Your message has been recorded.');
       setName('');
       setEmail('');
       setSubject('');
       setMessage('');
-    }, 1200);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (

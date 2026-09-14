@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { ProjectCard } from '../components/ProjectCard';
 import { projectsAPI } from '../config/api';
+import { cacheService } from '../services/cacheService';
 
 export const projectsData = [
   {
@@ -103,15 +104,39 @@ export const ProjectsScreen = ({ navigation }) => {
   const { colors, isLight } = useTheme();
   const [filter, setFilter] = useState('all');
   const [projectsList, setProjectsList] = useState(projectsData);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadProjects = async () => {
+    await cacheService.fetchWithCache(
+      'projects_list',
+      projectsAPI.getProjects,
+      (data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProjectsList(data);
+        }
+      },
+      projectsData
+    );
+  };
 
   useEffect(() => {
-    projectsAPI
-      .getProjects()
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setProjectsList(data);
-      })
-      .catch(() => {});
+    loadProjects();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const freshData = await projectsAPI.getProjects();
+      if (Array.isArray(freshData) && freshData.length > 0) {
+        setProjectsList(freshData);
+        await cacheService.set('projects_list', freshData);
+      }
+    } catch (e) {
+      console.warn('ProjectsScreen refresh failed:', e.message);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const filteredProjects = filter === 'all'
     ? projectsList
@@ -124,6 +149,9 @@ export const ProjectsScreen = ({ navigation }) => {
       style={[styles.container, { backgroundColor: colors.bg }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]} tintColor={colors.primary} />
+      }
     >
       <Text style={[styles.headerTitle, { color: colors.text }]}>Featured Projects</Text>
       <Text style={[styles.headerSub, { color: colors.textSecondary }]}>
