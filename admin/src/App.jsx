@@ -4,6 +4,12 @@ import { AdminAuthProvider, useAdminAuth } from "./context/AdminAuthContext";
 import Sidebar from "./components/Sidebar";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import ProjectsManager from "./pages/ProjectsManager";
+import ExperienceManager from "./pages/ExperienceManager";
+import EducationManager from "./pages/EducationManager";
+import SkillsManager from "./pages/SkillsManager";
+import BlogManager from "./pages/BlogManager";
+import ResumeManager from "./pages/ResumeManager";
 import ReviewsManager from "./pages/ReviewsManager";
 import SystemHealth from "./pages/SystemHealth";
 
@@ -42,6 +48,54 @@ const App = () => {
             element={
               <ProtectedLayout>
                 <AdminDashboard />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedLayout>
+                <ProjectsManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/experience"
+            element={
+              <ProtectedLayout>
+                <ExperienceManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/education"
+            element={
+              <ProtectedLayout>
+                <EducationManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/skills"
+            element={
+              <ProtectedLayout>
+                <SkillsManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/blogs"
+            element={
+              <ProtectedLayout>
+                <BlogManager />
+              </ProtectedLayout>
+            }
+          />
+          <Route
+            path="/resume"
+            element={
+              <ProtectedLayout>
+                <ResumeManager />
               </ProtectedLayout>
             }
           />

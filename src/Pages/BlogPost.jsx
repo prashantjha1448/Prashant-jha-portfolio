@@ -1,16 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BLOG_POSTS } from "./BlogPage";
+import { blogAPI } from "../services/api";
 
 const BlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const initialPost = BLOG_POSTS.find((p) => p.slug === slug);
+  const [post, setPost] = useState(initialPost);
+  const [loading, setLoading] = useState(!initialPost);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    blogAPI
+      .getBlogBySlug(slug)
+      .then((data) => {
+        if (data && data.slug) {
+          setPost(data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0b0f1a] text-white flex flex-col items-center justify-center p-6">
+        <h2 className="text-xl font-bold mb-4 font-mono text-purple-400 animate-pulse">Loading Article...</h2>
+      </div>
+    );
+  }
 
   if (!post) {
     return (

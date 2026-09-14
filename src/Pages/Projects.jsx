@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTheme } from "../context/ThemeContext";
+import { projectsAPI } from "../services/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,97 +40,109 @@ const BrowserChromeFrame = ({ url, isLive, isLight }) => (
   </div>
 );
 
+const INITIAL_PROJECTS = [
+  {
+    slug: "workquora",
+    date: "May 2026 – Present",
+    phase: "Flagship Active Founder Build",
+    title: "WorkQuora",
+    subtitle: "Flagship Hyperlocal Marketplace",
+    desc: "A KYC-verified local services marketplace connecting India's skilled workers (plumbers, electricians, mechanics, cooks) with local clients. Features real-time job dispatching, escrow payments, and native mobile apps.",
+    metrics: [
+      { label: "Verification", val: "100% KYC" },
+      { label: "Security", val: "Escrow Locked" },
+      { label: "Engine", val: "Auto-Dispatch" },
+    ],
+    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Redis", "Socket.io", "JWT"],
+    live: "https://www.workquora.com",
+    url: "workquora.com",
+    github: "#",
+    accent: "#3b82f6",
+    badgeType: "live",
+    isFlagship: true,
+    highlights: ["Aadhaar & PAN Identity Checks", "Digital Escrow Payment Locks", "Real-Time WebSocket Job Dispatch"],
+  },
+  {
+    slug: "chh-school",
+    date: "Aug 2026 – Present",
+    phase: "Enterprise Campus Platform",
+    title: "CHH School Management System",
+    subtitle: "Complete Educational Ecosystem",
+    desc: "Comprehensive school management platform engineered to handle campus administration, student records, fee tracking, and multi-role portal workflows.",
+    metrics: [
+      { label: "Roles", val: "Multi-User" },
+      { label: "Academic", val: "Full Records" },
+      { label: "Portals", val: "Admin & Student" },
+    ],
+    tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
+    live: "https://chh-school-management-system.vercel.app/",
+    url: "chh-school.vercel.app",
+    github: "#",
+    accent: "#f59e0b",
+    badgeType: "progress",
+    isFlagship: false,
+    highlights: ["Multi-Role Admin & Student Dashboards", "Campus Record Tracking", "Automated Attendance Systems"],
+  },
+  {
+    slug: "notewave",
+    date: "2024",
+    phase: "Security & Productivity Platform",
+    title: "Notewave",
+    subtitle: "Secure Productivity Notes App",
+    desc: "Production-grade MERN notes application with JWT, Email OTP, Google OAuth 2.0, 2FA security, soft delete recovery, and Cloudinary media uploads.",
+    metrics: [
+      { label: "Security", val: "2FA & OAuth" },
+      { label: "Media", val: "Cloudinary" },
+      { label: "CRUD", val: "Soft Delete" },
+    ],
+    tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary"],
+    live: "https://notewave-frontend.vercel.app",
+    url: "notewave.vercel.app",
+    github: "https://github.com/prashantjha1448/notewave-frontend",
+    accent: "#a855f7",
+    badgeType: "live",
+    isFlagship: false,
+    highlights: ["Google OAuth & TOTP 2FA", "Cloudinary Media Attachments", "Soft Delete & Trash Recovery"],
+  },
+  {
+    slug: "lokpriyatam",
+    date: "2024",
+    phase: "Digital Storefront & Branding",
+    title: "Lokpriyatam",
+    subtitle: "Digital Storefront & Franchise Platform",
+    desc: "Modern responsive digital storefront built for a local tea brand business to accelerate brand presence, showcase menu items, and power franchise expansion.",
+    metrics: [
+      { label: "Design", val: "Modern UI" },
+      { label: "Business", val: "Franchise Module" },
+      { label: "Speed", val: "Lighthouse 98+" },
+    ],
+    tech: ["React.js", "Tailwind CSS", "GSAP"],
+    live: "#",
+    url: "lokpriyatam.com",
+    github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
+    accent: "#06b6d4",
+    badgeType: "live",
+    isFlagship: false,
+    highlights: ["Interactive Product Showcase", "Franchise Application Flow", "Pixel-Perfect Responsive UI"],
+  },
+];
+
 const Projects = () => {
   const { theme } = useTheme();
   const sectionRef = useRef(null);
   const isLight = theme === "light";
+  const [projects, setProjects] = useState(INITIAL_PROJECTS);
 
-  const projects = [
-    {
-      slug: "workquora",
-      date: "May 2026 – Present",
-      phase: "Flagship Active Founder Build",
-      title: "WorkQuora",
-      subtitle: "Flagship Hyperlocal Marketplace",
-      desc: "A KYC-verified local services marketplace connecting India's skilled workers (plumbers, electricians, mechanics, cooks) with local clients. Features real-time job dispatching, escrow payments, and native mobile apps.",
-      metrics: [
-        { label: "Verification", val: "100% KYC" },
-        { label: "Security", val: "Escrow Locked" },
-        { label: "Engine", val: "Auto-Dispatch" },
-      ],
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Redis", "Socket.io", "JWT"],
-      live: "https://www.workquora.com",
-      url: "workquora.com",
-      github: "#",
-      accent: "#3b82f6",
-      badgeType: "live",
-      isFlagship: true,
-      highlights: ["Aadhaar & PAN Identity Checks", "Digital Escrow Payment Locks", "Real-Time WebSocket Job Dispatch"],
-    },
-    {
-      slug: "chh-school",
-      date: "Aug 2026 – Present",
-      phase: "Enterprise Campus Platform",
-      title: "CHH School Management System",
-      subtitle: "Complete Educational Ecosystem",
-      desc: "Comprehensive school management platform engineered to handle campus administration, student records, fee tracking, and multi-role portal workflows.",
-      metrics: [
-        { label: "Roles", val: "Multi-User" },
-        { label: "Academic", val: "Full Records" },
-        { label: "Portals", val: "Admin & Student" },
-      ],
-      tech: ["React.js", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
-      live: "https://chh-school-management-system.vercel.app/",
-      url: "chh-school.vercel.app",
-      github: "#",
-      accent: "#f59e0b",
-      badgeType: "progress",
-      isFlagship: false,
-      highlights: ["Multi-Role Admin & Student Dashboards", "Campus Record Tracking", "Automated Attendance Systems"],
-    },
-    {
-      slug: "notewave",
-      date: "2024",
-      phase: "Security & Productivity Platform",
-      title: "Notewave",
-      subtitle: "Secure Productivity Notes App",
-      desc: "Production-grade MERN notes application with JWT, Email OTP, Google OAuth 2.0, 2FA security, soft delete recovery, and Cloudinary media uploads.",
-      metrics: [
-        { label: "Security", val: "2FA & OAuth" },
-        { label: "Media", val: "Cloudinary" },
-        { label: "CRUD", val: "Soft Delete" },
-      ],
-      tech: ["React", "Node.js", "MongoDB", "JWT", "Cloudinary"],
-      live: "https://notewave-frontend.vercel.app",
-      url: "notewave.vercel.app",
-      github: "https://github.com/prashantjha1448/notewave-frontend",
-      accent: "#a855f7",
-      badgeType: "live",
-      isFlagship: false,
-      highlights: ["Google OAuth & TOTP 2FA", "Cloudinary Media Attachments", "Soft Delete & Trash Recovery"],
-    },
-    {
-      slug: "lokpriyatam",
-      date: "2024",
-      phase: "Digital Storefront & Branding",
-      title: "Lokpriyatam",
-      subtitle: "Digital Storefront & Franchise Platform",
-      desc: "Modern responsive digital storefront built for a local tea brand business to accelerate brand presence, showcase menu items, and power franchise expansion.",
-      metrics: [
-        { label: "Design", val: "Modern UI" },
-        { label: "Business", val: "Franchise Module" },
-        { label: "Speed", val: "Lighthouse 98+" },
-      ],
-      tech: ["React.js", "Tailwind CSS", "GSAP"],
-      live: "#",
-      url: "lokpriyatam.com",
-      github: "https://github.com/prashantjha1448/Lokpriyatam-frontend",
-      accent: "#06b6d4",
-      badgeType: "live",
-      isFlagship: false,
-      highlights: ["Interactive Product Showcase", "Franchise Application Flow", "Pixel-Perfect Responsive UI"],
-    },
-  ];
+  useEffect(() => {
+    projectsAPI
+      .getProjects()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

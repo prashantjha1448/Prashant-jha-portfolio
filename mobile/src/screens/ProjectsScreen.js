@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { ProjectCard } from '../components/ProjectCard';
+import { projectsAPI } from '../config/api';
 
 export const projectsData = [
   {
@@ -101,12 +102,22 @@ export const projectsData = [
 export const ProjectsScreen = ({ navigation }) => {
   const { colors, isLight } = useTheme();
   const [filter, setFilter] = useState('all');
+  const [projectsList, setProjectsList] = useState(projectsData);
+
+  useEffect(() => {
+    projectsAPI
+      .getProjects()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setProjectsList(data);
+      })
+      .catch(() => {});
+  }, []);
 
   const filteredProjects = filter === 'all'
-    ? projectsData
+    ? projectsList
     : filter === 'flagship'
-    ? projectsData.filter(p => p.isFlagship)
-    : projectsData.filter(p => !p.isFlagship);
+    ? projectsList.filter(p => p.isFlagship)
+    : projectsList.filter(p => !p.isFlagship);
 
   return (
     <ScrollView

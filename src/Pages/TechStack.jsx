@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { skillsAPI } from "../services/api";
+
 gsap.registerPlugin(ScrollTrigger);
 
 // ✅ Small reusable card
@@ -34,69 +36,73 @@ const TechCard = ({ tech, index }) => (
   </div>
 );
 
+const INITIAL_TECHS = [
+  // Languages
+  { name: "JavaScript", type: "Language", icon: "devicon-javascript-plain colored", category: "frontend" },
+  { name: "HTML5", type: "Markup", icon: "devicon-html5-plain colored", category: "frontend" },
+  { name: "CSS3", type: "Styling", icon: "devicon-css3-plain colored", category: "frontend" },
+
+  // Frontend
+  { name: "React.js", type: "Frontend", icon: "devicon-react-original colored", category: "frontend" },
+  { name: "Redux Toolkit", type: "Frontend", icon: "devicon-redux-original colored", category: "frontend" },
+  { name: "Tailwind CSS", type: "Styling", icon: "devicon-tailwindcss-original colored", category: "frontend" },
+  { name: "Framer Motion", type: "Frontend", icon: "ri-play-circle-line text-purple-400", category: "frontend" },
+  { name: "Context API", type: "State Mgmt", icon: "ri-bubble-chart-line text-blue-400", category: "frontend" },
+  { name: "React Router", type: "Routing", icon: "ri-route-line text-red-400", category: "frontend" },
+
+  // Backend & APIs
+  { name: "Node.js", type: "Backend", icon: "devicon-nodejs-plain colored", category: "backend" },
+  { name: "Express.js", type: "Backend", icon: "devicon-express-original text-gray-400", category: "backend" },
+  { name: "REST API", type: "API", icon: "ri-api-line text-emerald-400", category: "backend" },
+  { name: "Socket.io", type: "Real-time", icon: "devicon-socketio-original text-white", category: "backend" },
+  { name: "Redis", type: "Backend", icon: "devicon-redis-plain colored", category: "backend" },
+  { name: "BullMQ", type: "Queue", icon: "ri-list-settings-line text-orange-500", category: "backend" },
+  { name: "Nodemailer", type: "Email", icon: "ri-mail-send-line text-blue-500", category: "backend" },
+
+  // Databases & ORMs
+  { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored", category: "database" },
+  { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain", category: "database" },
+  { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500", category: "database" },
+  { name: "PostgreSQL", type: "Database", icon: "devicon-postgresql-plain colored", category: "database" },
+
+  // Security & Auth
+  { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400", category: "backend" },
+  { name: "bcrypt", type: "Security", icon: "ri-lock-password-line text-yellow-500", category: "backend" },
+  { name: "OAuth 2.0", type: "Auth", icon: "devicon-oauth-plain colored", category: "backend" },
+  { name: "Passport.js", type: "Auth", icon: "ri-passport-line text-sky-400", category: "backend" },
+
+  // Media & Storage
+  { name: "Cloudinary", type: "Media", icon: "ri-image-line text-cyan-400", category: "tools" },
+
+  // Developer Tools & Version Control
+  { name: "Git", type: "Version Control", icon: "devicon-git-plain colored", category: "tools" },
+  { name: "GitHub", type: "Repo", icon: "devicon-github-original text-white", category: "tools" },
+  { name: "Postman", type: "API Tool", icon: "devicon-postman-plain colored", category: "tools" },
+  { name: "VS Code", type: "Editor", icon: "devicon-vscode-plain colored", category: "tools" },
+  { name: "npm", type: "Package Mgmt", icon: "devicon-npm-original-wordmark colored", category: "tools" },
+  { name: "Vite", type: "Build Tool", icon: "devicon-vite-plain colored", category: "tools" },
+
+  // Deployment
+  { name: "Vercel", type: "Deployment", icon: "devicon-vercel-original text-white", category: "tools" },
+  { name: "Render", type: "Deployment", icon: "ri-server-line text-indigo-400", category: "tools" },
+  { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored", category: "tools" },
+];
+
 const TechStack = () => {
   const sectionRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [techs, setTechs] = useState(INITIAL_TECHS);
 
-  const categories = [
-    { id: "all", label: "All" },
-    { id: "frontend", label: "Frontend" },
-    { id: "backend", label: "Backend" },
-    { id: "database", label: "Database" },
-    { id: "tools", label: "Tools & DevOps" },
-  ];
-
-  const techs = [
-    // Languages
-    { name: "JavaScript", type: "Language", icon: "devicon-javascript-plain colored", category: "frontend" },
-    { name: "HTML5", type: "Markup", icon: "devicon-html5-plain colored", category: "frontend" },
-    { name: "CSS3", type: "Styling", icon: "devicon-css3-plain colored", category: "frontend" },
-
-    // Frontend
-    { name: "React.js", type: "Frontend", icon: "devicon-react-original colored", category: "frontend" },
-    { name: "Redux Toolkit", type: "Frontend", icon: "devicon-redux-original colored", category: "frontend" },
-    { name: "Tailwind CSS", type: "Styling", icon: "devicon-tailwindcss-original colored", category: "frontend" },
-    { name: "Framer Motion", type: "Frontend", icon: "ri-play-circle-line text-purple-400", category: "frontend" },
-    { name: "Context API", type: "State Mgmt", icon: "ri-bubble-chart-line text-blue-400", category: "frontend" },
-    { name: "React Router", type: "Routing", icon: "ri-route-line text-red-400", category: "frontend" },
-
-    // Backend & APIs
-    { name: "Node.js", type: "Backend", icon: "devicon-nodejs-plain colored", category: "backend" },
-    { name: "Express.js", type: "Backend", icon: "devicon-express-original text-gray-400", category: "backend" },
-    { name: "REST API", type: "API", icon: "ri-api-line text-emerald-400", category: "backend" },
-    { name: "Socket.io", type: "Real-time", icon: "devicon-socketio-original text-white", category: "backend" },
-    { name: "Redis", type: "Backend", icon: "devicon-redis-plain colored", category: "backend" },
-    { name: "BullMQ", type: "Queue", icon: "ri-list-settings-line text-orange-500", category: "backend" },
-    { name: "Nodemailer", type: "Email", icon: "ri-mail-send-line text-blue-500", category: "backend" },
-
-    // Databases & ORMs
-    { name: "MongoDB", type: "Database", icon: "devicon-mongodb-plain colored", category: "database" },
-    { name: "MongoDB Atlas", type: "Cloud DB", icon: "devicon-mongodb-plain", category: "database" },
-    { name: "Mongoose", type: "ODM", icon: "ri-database-2-line text-rose-500", category: "database" },
-    { name: "PostgreSQL", type: "Database", icon: "devicon-postgresql-plain colored", category: "database" },
-
-    // Security & Auth
-    { name: "JWT", type: "Auth", icon: "ri-shield-keyhole-line text-purple-400", category: "backend" },
-    { name: "bcrypt", type: "Security", icon: "ri-lock-password-line text-yellow-500", category: "backend" },
-    { name: "OAuth 2.0", type: "Auth", icon: "devicon-oauth-plain colored", category: "backend" },
-    { name: "Passport.js", type: "Auth", icon: "ri-passport-line text-sky-400", category: "backend" },
-
-    // Media & Storage
-    { name: "Cloudinary", type: "Media", icon: "ri-image-line text-cyan-400", category: "tools" },
-
-    // Developer Tools & Version Control
-    { name: "Git", type: "Version Control", icon: "devicon-git-plain colored", category: "tools" },
-    { name: "GitHub", type: "Repo", icon: "devicon-github-original text-white", category: "tools" },
-    { name: "Postman", type: "API Tool", icon: "devicon-postman-plain colored", category: "tools" },
-    { name: "VS Code", type: "Editor", icon: "devicon-vscode-plain colored", category: "tools" },
-    { name: "npm", type: "Package Mgmt", icon: "devicon-npm-original-wordmark colored", category: "tools" },
-    { name: "Vite", type: "Build Tool", icon: "devicon-vite-plain colored", category: "tools" },
-
-    // Deployment
-    { name: "Vercel", type: "Deployment", icon: "devicon-vercel-original text-white", category: "tools" },
-    { name: "Render", type: "Deployment", icon: "ri-server-line text-indigo-400", category: "tools" },
-    { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored", category: "tools" },
-  ];
+  useEffect(() => {
+    skillsAPI
+      .getSkills()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTechs(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
 
 

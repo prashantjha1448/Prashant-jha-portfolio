@@ -28,7 +28,6 @@ const request = async (endpoint, options = {}) => {
     }
     return data;
   } catch (err) {
-    // If live API fails in local dev, attempt local fallback
     if (window.location.hostname === "localhost") {
       try {
         const fallbackRes = await fetch(`${LOCAL_API_URL}${endpoint}`, {
@@ -50,20 +49,46 @@ const request = async (endpoint, options = {}) => {
 };
 
 export const adminAPI = {
-  login: (email, password) =>
-    request("/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }),
-
+  // Auth & System
+  login: (email, password) => request("/auth/login", { method: "POST", body: JSON.stringify({ email, password }) }),
   getProfile: () => request("/auth/me"),
-
-  getReviews: () => request("/reviews"),
-
-  deleteReview: (id) =>
-    request(`/reviews/${id}`, {
-      method: "DELETE",
-    }),
-
   getStatus: () => request("/status"),
+
+  // Reviews CRUD
+  getReviews: () => request("/reviews"),
+  deleteReview: (id) => request(`/reviews/${id}`, { method: "DELETE" }),
+
+  // Projects CRUD
+  getProjects: () => request("/projects"),
+  createProject: (data) => request("/projects", { method: "POST", body: JSON.stringify(data) }),
+  updateProject: (id, data) => request(`/projects/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteProject: (id) => request(`/projects/${id}`, { method: "DELETE" }),
+
+  // Experiences CRUD
+  getExperiences: () => request("/experience"),
+  createExperience: (data) => request("/experience", { method: "POST", body: JSON.stringify(data) }),
+  updateExperience: (id, data) => request(`/experience/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteExperience: (id) => request(`/experience/${id}`, { method: "DELETE" }),
+
+  // Education CRUD
+  getEducation: () => request("/education"),
+  createEducation: (data) => request("/education", { method: "POST", body: JSON.stringify(data) }),
+  updateEducation: (id, data) => request(`/education/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteEducation: (id) => request(`/education/${id}`, { method: "DELETE" }),
+
+  // Skills CRUD
+  getSkills: () => request("/skills"),
+  createSkill: (data) => request("/skills", { method: "POST", body: JSON.stringify(data) }),
+  updateSkill: (id, data) => request(`/skills/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteSkill: (id) => request(`/skills/${id}`, { method: "DELETE" }),
+
+  // Blogs CRUD
+  getBlogs: () => request("/blogs"),
+  createBlog: (data) => request("/blogs", { method: "POST", body: JSON.stringify(data) }),
+  updateBlog: (id, data) => request(`/blogs/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteBlog: (id) => request(`/blogs/${id}`, { method: "DELETE" }),
+
+  // Resume CRUD
+  getResume: () => request("/resume"),
+  updateResume: (data) => request("/resume", { method: "PUT", body: JSON.stringify(data) }),
 };

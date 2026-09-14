@@ -1,10 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { resumeAPI } from "../services/api";
 
 const ResumePage = () => {
+  const [resumeData, setResumeData] = useState({ pdfUrl: "/resume.pdf" });
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    resumeAPI
+      .getResume()
+      .then((data) => {
+        if (data && data.pdfUrl) setResumeData(data);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -21,7 +30,7 @@ const ResumePage = () => {
           </Link>
 
           <a
-            href="/resume.pdf"
+            href={resumeData.pdfUrl || "/resume.pdf"}
             target="_blank"
             rel="noreferrer"
             download="Prashant_Jha_Resume.pdf"

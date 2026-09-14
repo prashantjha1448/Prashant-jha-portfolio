@@ -108,3 +108,16 @@ export const reviewsAPI = {
 export const statusAPI = {
   getStatus: () => request('/status'),
 };
+
+export const projectsAPI = {
+  getProjects: () => request('/projects'),
+};
+
+export const experienceAPI = {
+  getExperience: () => request('/experience'),
+};
+
+export const skillsAPI = {
+  getSkills: () => request('/skills'),
+};
+

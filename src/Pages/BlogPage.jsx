@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { blogAPI } from "../services/api";
 
 export const BLOG_POSTS = [
   {
@@ -80,8 +81,16 @@ To prevent broken WebSocket connections during cloud server restarts or network 
 ];
 
 const BlogPage = () => {
+  const [blogs, setBlogs] = useState(BLOG_POSTS);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    blogAPI
+      .getBlogs()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setBlogs(data);
+      })
+      .catch(() => {});
   }, []);
 
   return (
@@ -108,7 +117,7 @@ const BlogPage = () => {
 
         {/* Blog Post List */}
         <div className="flex flex-col gap-8">
-          {BLOG_POSTS.map((post, idx) => (
+          {blogs.map((post, idx) => (
             <motion.div
               key={post.slug}
               initial={{ opacity: 0, y: 20 }}

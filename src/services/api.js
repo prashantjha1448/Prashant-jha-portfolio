@@ -80,3 +80,36 @@ export const statusAPI = {
       body: JSON.stringify({ title, subtitle, link, active }),
     }),
 };
+
+// Projects API Methods
+export const projectsAPI = {
+  getProjects: () => request("/projects"),
+  getProjectBySlug: (slug) => request(`/projects/${slug}`),
+};
+
+// Experience API Methods
+export const experienceAPI = {
+  getExperience: () => request("/experience"),
+};
+
+// Education API Methods
+export const educationAPI = {
+  getEducation: () => request("/education"),
+};
+
+// Skills API Methods
+export const skillsAPI = {
+  getSkills: () => request("/skills"),
+};
+
+// Blog API Methods
+export const blogAPI = {
+  getBlogs: () => request("/blogs"),
+  getBlogBySlug: (slug) => request(`/blogs/${slug}`),
+};
+
+// Resume API Methods
+export const resumeAPI = {
+  getResume: () => request("/resume"),
+};
+

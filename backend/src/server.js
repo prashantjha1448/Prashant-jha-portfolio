@@ -6,6 +6,12 @@ import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import statusRoutes from "./routes/statusRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import experienceRoutes from "./routes/experienceRoutes.js";
+import educationRoutes from "./routes/educationRoutes.js";
+import skillRoutes from "./routes/skillRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
 
 dotenv.config();
 
@@ -42,7 +48,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({
     status: "API Online",
-    message: "Prashant Jha Portfolio MERN Backend Services",
+    message: "Prashant Jha Portfolio Full-CMS MERN Backend Services",
     timestamp: new Date().toISOString(),
   });
 });
@@ -51,6 +57,12 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/status", statusRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/education", educationRoutes);
+app.use("/api/skills", skillRoutes);
+app.use("/api/blogs", blogRoutes);
+app.use("/api/resume", resumeRoutes);
 
 // 404 Route Handler
 app.use((req, res) => {

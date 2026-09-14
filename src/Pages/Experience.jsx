@@ -1,53 +1,72 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { experienceAPI, educationAPI } from "../services/api";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const INITIAL_WORK = [
+  {
+    side: "left",
+    period: "May 2026 – Present",
+    title: "Founder & Full-Stack Engineer",
+    place: "WorkQuora",
+    desc: "Solo-designed and built a KYC-verified local services marketplace from architecture to production. Full MERN stack, native mobile apps, an auto-dispatch job matching engine, and Razorpay payment escrow.",
+    color: "#a855f7",
+    icon: "ri-briefcase-line",
+  },
+];
+
+const INITIAL_EDUCATION = [
+  {
+    side: "left",
+    period: "2023 – 2026",
+    title: "B.Tech in Computer Science",
+    place: "Lakshmi Narain College of Technology, Bhopal",
+    desc: "Completed Bachelor's in Computer Science & Engineering. Built production-grade MERN apps, implemented full auth pipelines, and mastered core computer science fundamentals.",
+    color: "#3b82f6",
+    icon: "ri-graduation-cap-line",
+  },
+  {
+    side: "right",
+    period: "2020 – 2023",
+    title: "Diploma in Computer Science",
+    place: "Patel College of Science & Technology, Bhopal",
+    desc: "Strong foundation in programming, web technologies, and software engineering fundamentals.",
+    color: "#a855f7",
+    icon: "ri-book-open-line",
+  },
+  {
+    side: "left",
+    period: "2019 – 2020",
+    title: "Secondary Education",
+    place: "Children's Happy Home , katihar (Bihar)",
+    desc: "Completed schooling with general studies background. Started exploring computers and coding.",
+    color: "#06b6d4",
+    icon: "ri-school-line",
+  },
+];
+
 const Experience = () => {
   const sectionRef = useRef(null);
+  const [workExperience, setWorkExperience] = useState(INITIAL_WORK);
+  const [education, setEducation] = useState(INITIAL_EDUCATION);
 
-  const workExperience = [
-    {
-      side: "left",
-      period: "May 2026 – Present",
-      title: "Founder & Full-Stack Engineer",
-      place: "WorkQuora",
-      desc: "Solo-designed and built a KYC-verified local services marketplace from architecture to production. Full MERN stack, native mobile apps, an auto-dispatch job matching engine, and Razorpay payment escrow.",
-      color: "#a855f7",
-      icon: "ri-briefcase-line",
-    }
-  ];
+  useEffect(() => {
+    experienceAPI
+      .getExperience()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setWorkExperience(data);
+      })
+      .catch(() => {});
 
-  const education = [
-    {
-      side: "left",
-      period: "2023 – 2026",
-      title: "B.Tech in Computer Science",
-      place: "Lakshmi Narain College of Technology, Bhopal",
-      desc: "Completed Bachelor's in Computer Science & Engineering. Built production-grade MERN apps, implemented full auth pipelines, and mastered core computer science fundamentals.",
-      color: "#3b82f6",
-      icon: "ri-graduation-cap-line",
-    },
-    {
-      side: "right",
-      period: "2020 – 2023",
-      title: "Diploma in Computer Science",
-      place: "Patel College of Science & Technology, Bhopal",
-      desc: "Strong foundation in programming, web technologies, and software engineering fundamentals.",
-      color: "#a855f7",
-      icon: "ri-book-open-line",
-    },
-    {
-      side: "left",
-      period: "2019 – 2020",
-      title: "Secondary Education",
-      place: "Children's Happy Home , katihar (Bihar)",
-      desc: "Completed schooling with general studies background. Started exploring computers and coding.",
-      color: "#06b6d4",
-      icon: "ri-school-line",
-    },
-  ];
+    educationAPI
+      .getEducation()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setEducation(data);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {

@@ -13,6 +13,12 @@ const Sidebar = () => {
 
   const navItems = [
     { label: "Dashboard", path: "/", icon: "ri-dashboard-3-line" },
+    { label: "Projects", path: "/projects", icon: "ri-folder-code-line" },
+    { label: "Experience", path: "/experience", icon: "ri-briefcase-line" },
+    { label: "Education", path: "/education", icon: "ri-graduation-cap-line" },
+    { label: "Skills", path: "/skills", icon: "ri-code-s-slash-line" },
+    { label: "Blogs", path: "/blogs", icon: "ri-article-line" },
+    { label: "Resume", path: "/resume", icon: "ri-file-pdf-line" },
     { label: "Reviews Manager", path: "/reviews", icon: "ri-message-3-line" },
     { label: "System Health", path: "/health", icon: "ri-pulse-line" },
   ];
