@@ -1,9 +1,11 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 import User from "../models/User.js";
 import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || "portfolio_jwt_secret_key_123", {
@@ -133,20 +135,44 @@ router.post("/login", async (req, res) => {
 // @access  Public
 router.post("/google", async (req, res) => {
   try {
-    const { name, email, avatar, city, location } = req.body;
+    const { token, idToken, credential, name, email, avatar, city, location } = req.body;
 
-    if (!email) {
-      return res.status(400).json({ message: "Invalid Google user payload." });
+    let targetEmail = email;
+    let targetName = name;
+    let targetAvatar = avatar;
+
+    // Verify Google ID Token if provided from Google OAuth Client
+    const rawGoogleToken = idToken || token || credential;
+    if (rawGoogleToken && process.env.GOOGLE_CLIENT_ID) {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: rawGoogleToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (payload && payload.email) {
+          targetEmail = payload.email;
+          targetName = payload.name || targetName;
+          targetAvatar = payload.picture || targetAvatar;
+        }
+      } catch (tokenErr) {
+        console.warn("[Google Token Verify Warning]:", tokenErr.message);
+      }
     }
 
-    let user = await User.findOne({ email: email.toLowerCase() });
+    if (!targetEmail) {
+      return res.status(400).json({ message: "Invalid Google user payload. Email address is required." });
+    }
+
+    const normalizedEmail = targetEmail.toLowerCase().trim();
+    let user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       user = await User.create({
-        name: name || email.split("@")[0],
-        email: email.toLowerCase(),
-        password: Math.random().toString(36).slice(-10) + "Aa1!", // Random secure hash
-        avatar: avatar || "",
+        name: targetName || normalizedEmail.split("@")[0],
+        email: normalizedEmail,
+        password: Math.random().toString(36).slice(-10) + "Aa1!#", // Random bcrypt-hashed password
+        avatar: targetAvatar || "",
         city: city || "India",
         location: location || null,
         authProvider: "google",
@@ -156,6 +182,7 @@ router.post("/google", async (req, res) => {
       user.authProvider = "google";
       user.kycStatus = "verified";
       if (city && user.city === "India") user.city = city;
+      if (targetAvatar) user.avatar = targetAvatar;
       await user.save();
     }
 
