@@ -1,7 +1,9 @@
 const LIVE_API_URL = "https://prashant-jha-portfolio.onrender.com/api";
 const LOCAL_API_URL = "http://localhost:5001/api";
 
-export const API_BASE_URL = LIVE_API_URL;
+const isLocalhost = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+export const API_BASE_URL = import.meta.env.VITE_API_URL || (isLocalhost ? LOCAL_API_URL : LIVE_API_URL);
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("admin_token");
