@@ -62,6 +62,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
+const TEST_EMAIL = "playstore-reviewer@prashantjha.com";
+const TEST_PASSWORD = "PlayStoreTest2026!";
+
 // @route   POST /api/auth/login
 // @desc    Authenticate visitor user & get token
 // @access  Public
@@ -73,7 +76,36 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Please provide both email and password." });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Google Play Console Reviewer Hardcoded / Guaranteed Bypass
+    if (normalizedEmail === TEST_EMAIL && password === TEST_PASSWORD) {
+      let testUser = await User.findOne({ email: TEST_EMAIL });
+      if (!testUser) {
+        testUser = await User.create({
+          name: "Google Play Reviewer",
+          email: TEST_EMAIL,
+          password: TEST_PASSWORD,
+          avatar: "",
+          city: "Mountain View, CA",
+          authProvider: "email",
+          kycStatus: "verified",
+        });
+      }
+      return res.json({
+        _id: testUser._id,
+        name: testUser.name,
+        email: testUser.email,
+        avatar: testUser.avatar || "",
+        city: testUser.city,
+        authProvider: testUser.authProvider,
+        role: testUser.role,
+        kycStatus: testUser.kycStatus,
+        token: generateToken(testUser._id),
+      });
+    }
+
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (user && (await user.matchPassword(password))) {
       return res.json({

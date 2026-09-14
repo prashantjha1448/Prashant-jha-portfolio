@@ -45,15 +45,30 @@ router.post("/", protect, async (req, res) => {
       return res.status(400).json({ message: "Please provide a meaningful comment (at least 5 characters)." });
     }
 
-    // Rate Limiting Check: 1 review per user
-    const existingReview = await Review.findOne({ user: req.user._id });
-    if (existingReview) {
-      return res.status(400).json({ message: "You have already submitted a review. Thank you for your feedback!" });
-    }
-
     const targetProject = project || "WorkQuora";
     const targetCity = city || req.user.city || "India";
     const isVerified = req.user.authProvider === "google" || req.user.kycStatus === "verified";
+
+    // Rate Limiting Check: 1 review per user (Allow Google Play Reviewer to re-test)
+    const existingReview = await Review.findOne({ user: req.user._id });
+    if (existingReview) {
+      if (req.user.email === "playstore-reviewer@prashantjha.com") {
+        existingReview.rating = parsedRating;
+        existingReview.comment = comment.trim();
+        existingReview.city = targetCity;
+        existingReview.project = targetProject;
+        existingReview.projectLink = PROJECT_LINKS[targetProject] || "";
+        existingReview.verified = true;
+        await existingReview.save();
+
+        const updatedReview = await Review.findById(existingReview._id).populate(
+          "user",
+          "name email avatar city authProvider kycStatus"
+        );
+        return res.status(200).json(updatedReview);
+      }
+      return res.status(400).json({ message: "You have already submitted a review. Thank you for your feedback!" });
+    }
 
     const review = await Review.create({
       user: req.user._id,
