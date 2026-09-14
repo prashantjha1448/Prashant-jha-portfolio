@@ -7,6 +7,7 @@ import CaseStudy from "./Pages/CaseStudy";
 import ResumePage from "./Pages/ResumePage";
 import BlogPage from "./Pages/BlogPage";
 import BlogPost from "./Pages/BlogPost";
+import PrivacyPage from "./Pages/PrivacyPage";
 import NotFound from "./Pages/NotFound";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -25,6 +26,8 @@ const App = () => {
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <AuthModal />

@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Prashant Jha",
+    "slug": "prashant-jha-portfolio",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0b0f19"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prashantjha.portfolio"
+    },
+    "android": {
+      "package": "com.prashantjha.portfolio",
+      "versionCode": 1,
+      "targetSdkVersion": 34,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0b0f19"
+      },
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "apiUrl": "https://prashant-jha-portfolio.onrender.com/api",
+      "eas": {
+        "projectId": "515fd91f-6215-4009-be36-b11f03c6878d"
+      }
+    },
+    "owner": "prashantjha1448"
+  }
+}
