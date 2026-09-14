@@ -88,6 +88,14 @@ const INITIAL_TECHS = [
   { name: "Google Cloud", type: "Cloud Tools", icon: "devicon-googlecloud-plain colored", category: "tools" },
 ];
 
+const categories = [
+  { id: "all", label: "All Tech" },
+  { id: "frontend", label: "Frontend" },
+  { id: "backend", label: "Backend & APIs" },
+  { id: "database", label: "Databases" },
+  { id: "tools", label: "DevOps & Tools" },
+];
+
 const TechStack = () => {
   const sectionRef = useRef(null);
   const [activeCategory, setActiveCategory] = useState("all");
