@@ -1,10 +1,5 @@
-import express from "express";
 import Status from "../models/Status.js";
-import { protect, adminOnly } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
-
-// Default fallback status if database has no record yet
 const DEFAULT_STATUS = {
   title: "Building WorkQuora v2 & CHH School Management System",
   subtitle: "Real-time dispatch engine & multi-role ecosystem architecture",
@@ -12,10 +7,10 @@ const DEFAULT_STATUS = {
   active: true,
 };
 
-// @route   GET /api/status
 // @desc    Get current building status badge info
+// @route   GET /api/status
 // @access  Public
-router.get("/", async (req, res) => {
+export const getStatus = async (req, res) => {
   try {
     const status = await Status.findOne({ active: true }).sort({ updatedAt: -1 });
     if (status) {
@@ -27,12 +22,12 @@ router.get("/", async (req, res) => {
     console.error("[Get Status Error]:", error);
     return res.json(DEFAULT_STATUS);
   }
-});
+};
 
-// @route   PUT /api/status
 // @desc    Update current building status (Admin only)
+// @route   PUT /api/status
 // @access  Private (Admin)
-router.put("/", protect, adminOnly, async (req, res) => {
+export const updateStatus = async (req, res) => {
   try {
     const { title, subtitle, link, active } = req.body;
 
@@ -57,6 +52,4 @@ router.put("/", protect, adminOnly, async (req, res) => {
     console.error("[Update Status Error]:", error);
     return res.status(500).json({ message: "Server error updating status widget." });
   }
-});
-
-export default router;
+};

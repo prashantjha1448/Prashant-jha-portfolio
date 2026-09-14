@@ -28,7 +28,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
         callback(null, true);
       } else {
-        callback(null, true); // Permissive CORS for portfolio API
+        callback(null, true);
       }
     },
     credentials: true,

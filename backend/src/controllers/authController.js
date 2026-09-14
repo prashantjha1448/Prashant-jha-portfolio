@@ -1,10 +1,7 @@
-import express from "express";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 import User from "../models/User.js";
-import { protect } from "../middleware/authMiddleware.js";
 
-const router = express.Router();
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id) => {
@@ -13,10 +10,13 @@ const generateToken = (id) => {
   });
 };
 
-// @route   POST /api/auth/register
+const TEST_EMAIL = "playstore-reviewer@prashantjha.com";
+const TEST_PASSWORD = "PlayStoreTest2026!";
+
 // @desc    Register a new visitor user
+// @route   POST /api/auth/register
 // @access  Public
-router.post("/register", async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, email, password, avatar, city, location } = req.body;
 
@@ -62,15 +62,12 @@ router.post("/register", async (req, res) => {
     console.error("[Register Error]:", error);
     return res.status(500).json({ message: error.message || "Server error during registration." });
   }
-});
+};
 
-const TEST_EMAIL = "playstore-reviewer@prashantjha.com";
-const TEST_PASSWORD = "PlayStoreTest2026!";
-
-// @route   POST /api/auth/login
 // @desc    Authenticate visitor user & get token
+// @route   POST /api/auth/login
 // @access  Public
-router.post("/login", async (req, res) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -128,12 +125,12 @@ router.post("/login", async (req, res) => {
     console.error("[Login Error]:", error);
     return res.status(500).json({ message: error.message || "Server error during login." });
   }
-});
+};
 
-// @route   POST /api/auth/google
 // @desc    Authenticate / register user via Google OAuth
+// @route   POST /api/auth/google
 // @access  Public
-router.post("/google", async (req, res) => {
+export const googleAuth = async (req, res) => {
   try {
     const { token, idToken, credential, name, email, avatar, city, location } = req.body;
 
@@ -171,12 +168,12 @@ router.post("/google", async (req, res) => {
       user = await User.create({
         name: targetName || normalizedEmail.split("@")[0],
         email: normalizedEmail,
-        password: Math.random().toString(36).slice(-10) + "Aa1!#", // Random bcrypt-hashed password
+        password: Math.random().toString(36).slice(-10) + "Aa1!#",
         avatar: targetAvatar || "",
         city: city || "India",
         location: location || null,
         authProvider: "google",
-        kycStatus: "verified", // Auto-verify Google OAuth users
+        kycStatus: "verified",
       });
     } else {
       user.authProvider = "google";
@@ -201,12 +198,12 @@ router.post("/google", async (req, res) => {
     console.error("[Google Auth Error]:", error);
     return res.status(500).json({ message: "Server error during Google authentication." });
   }
-});
+};
 
-// @route   GET /api/auth/me
 // @desc    Get current user profile
+// @route   GET /api/auth/me
 // @access  Private
-router.get("/me", protect, async (req, res) => {
+export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
     if (user) {
@@ -217,6 +214,4 @@ router.get("/me", protect, async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Server error fetching user profile." });
   }
-});
-
-export default router;
+};

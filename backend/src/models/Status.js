@@ -5,11 +5,11 @@ const statusSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      default: "Building WorkQuora v2 & CHH School Ecosystem",
+      default: "Building WorkQuora v2 & CHH School Management System",
     },
     subtitle: {
       type: String,
-      default: "Real-time dispatch matching engine & payment escrow",
+      default: "Real-time dispatch engine & multi-role ecosystem architecture",
     },
     link: {
       type: String,
