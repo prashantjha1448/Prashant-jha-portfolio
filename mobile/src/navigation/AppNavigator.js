@@ -16,6 +16,7 @@ import { ContactScreen } from '../screens/ContactScreen';
 import { PrivacyPolicyScreen } from '../screens/PrivacyPolicyScreen';
 import { TermsScreen } from '../screens/TermsScreen';
 import { AccountDeletionScreen } from '../screens/AccountDeletionScreen';
+import { LoginScreen } from '../screens/LoginScreen';
 
 // Icons
 import { Home, Layers, UserCheck, MessageSquare, Mail } from 'lucide-react-native';
@@ -123,6 +124,7 @@ export const AppNavigator = () => {
         }}
       >
         <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CaseStudy" component={CaseStudyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Terms" component={TermsScreen} options={{ headerShown: false }} />

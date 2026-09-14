@@ -11,11 +11,14 @@ import {
   Alert,
 } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { reviewsAPI } from '../config/api';
-import { Star, MessageSquare, Plus, ShieldCheck, User } from 'lucide-react-native';
+import { Star, Plus, ShieldCheck, User, LogIn, LogOut } from 'lucide-react-native';
 
-export const ReviewsScreen = () => {
+export const ReviewsScreen = ({ navigation }) => {
   const { colors, isLight } = useTheme();
+  const { user, isLoggedIn, logout } = useAuth();
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,7 +27,7 @@ export const ReviewsScreen = () => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [project, setProject] = useState('WorkQuora');
-  const [city, setCity] = useState('Delhi NCR');
+  const [city, setCity] = useState(user?.city || 'Delhi NCR');
   const [submitting, setSubmitting] = useState(false);
 
   const fetchReviews = async () => {
@@ -66,6 +69,25 @@ export const ReviewsScreen = () => {
     fetchReviews();
   }, []);
 
+  const handleOpenWriteReview = () => {
+    if (!isLoggedIn) {
+      Alert.alert(
+        'Login Required 🔒',
+        'Review post karne ke liye pehle login karna zaroori hai.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Login / Register',
+            onPress: () => navigation.navigate('Login'),
+          },
+        ]
+      );
+    } else {
+      if (user?.city) setCity(user.city);
+      setModalVisible(true);
+    }
+  };
+
   const handleSubmitReview = async () => {
     if (!comment.trim()) {
       Alert.alert('Validation', 'Please enter a review comment.');
@@ -75,7 +97,7 @@ export const ReviewsScreen = () => {
     try {
       setSubmitting(true);
       await reviewsAPI.createReview(rating, comment, project, city);
-      Alert.alert('Success', 'Thank you! Your review has been submitted.');
+      Alert.alert('Success 🎉', 'Thank you! Your verified review has been submitted.');
       setComment('');
       setModalVisible(false);
       fetchReviews();
@@ -103,8 +125,51 @@ export const ReviewsScreen = () => {
           </View>
         </View>
 
+        {/* Auth Status Bar */}
+        <View style={[styles.authBanner, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
+          {isLoggedIn ? (
+            <View style={styles.authBannerRow}>
+              <View style={styles.authUserInfo}>
+                <View style={[styles.userBadgeAvatar, { backgroundColor: `${colors.primary}25` }]}>
+                  <User size={16} color={colors.primary} />
+                </View>
+                <View>
+                  <Text style={[styles.authUserText, { color: colors.text }]}>
+                    Logged in as <Text style={{ fontWeight: '800', color: colors.primary }}>{user?.name || user?.email}</Text>
+                  </Text>
+                  <Text style={[styles.authUserSub, { color: colors.textMuted }]}>Ready to write verified reviews</Text>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => {
+                  logout();
+                  Alert.alert('Logged Out', 'You have been logged out.');
+                }}
+                style={[styles.logoutBtn, { borderColor: colors.cardBorder }]}
+              >
+                <LogOut size={14} color={colors.textMuted} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.authBannerRow}>
+              <Text style={[styles.authPromptText, { color: colors.textSecondary }]}>
+                🔒 Login required to post a review
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Login')}
+                style={[styles.loginSmallBtn, { backgroundColor: colors.primary }]}
+              >
+                <LogIn size={14} color="#ffffff" style={{ marginRight: 4 }} />
+                <Text style={styles.loginSmallText}>Sign In</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* Write Review Button */}
         <TouchableOpacity
-          onPress={() => setModalVisible(true)}
+          onPress={handleOpenWriteReview}
           style={[styles.addBtn, { backgroundColor: colors.primary }]}
           activeOpacity={0.8}
         >
@@ -160,6 +225,9 @@ export const ReviewsScreen = () => {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCard, { backgroundColor: colors.cardBg, borderColor: colors.cardBorder }]}>
             <Text style={[styles.modalTitle, { color: colors.text }]}>Write a Verified Review</Text>
+            <Text style={[styles.postingAsText, { color: colors.textMuted }]}>
+              Posting as: <Text style={{ fontWeight: '700', color: colors.primary }}>{user?.name || user?.email}</Text>
+            </Text>
 
             {/* Rating selector */}
             <Text style={[styles.label, { color: colors.textSecondary }]}>Rating</Text>
@@ -235,7 +303,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   headerRow: {
-    marginBottom: 16,
+    marginBottom: 14,
   },
   headerTitle: {
     fontSize: 28,
@@ -245,6 +313,56 @@ const styles = StyleSheet.create({
   headerSub: {
     fontSize: 13,
     lineHeight: 18,
+  },
+  authBanner: {
+    padding: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 16,
+  },
+  authBannerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  authUserInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  userBadgeAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  authUserText: {
+    fontSize: 13,
+  },
+  authUserSub: {
+    fontSize: 11,
+  },
+  logoutBtn: {
+    padding: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  authPromptText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  loginSmallBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+  },
+  loginSmallText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '700',
   },
   addBtn: {
     flexDirection: 'row',
@@ -327,7 +445,11 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 20,
     fontWeight: '900',
-    marginBottom: 16,
+    marginBottom: 2,
+  },
+  postingAsText: {
+    fontSize: 12,
+    marginBottom: 12,
   },
   label: {
     fontSize: 12,

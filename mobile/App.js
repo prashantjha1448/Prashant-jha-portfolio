@@ -2,6 +2,7 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import { AuthProvider } from './src/context/AuthContext';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import { View, StyleSheet } from 'react-native';
 
@@ -20,7 +21,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <MainApp />
+        <AuthProvider>
+          <MainApp />
+        </AuthProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );
